@@ -2,3 +2,4 @@
 
 ## Dependencies
 - notify-send
+- net-tools
