@@ -1,5 +1,5 @@
 import socket
-
+from os import system
 
 class Sender:
     def __init__(self):
@@ -9,7 +9,7 @@ class Sender:
         self.ip_broadcast = ""
 
     def set_broadcast_ip(self):
-        self.ip_broadcast = input("Enter the ip address for broadcast: ")
+        self.ip_broadcast = str(system("ifconfig | grep broadcast | awk '{print $NF}'"))
 
     def send_broadcast_message(self, message):
         self.server.sendto(message, (self.ip_broadcast, 37020))

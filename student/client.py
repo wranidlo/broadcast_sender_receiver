@@ -8,7 +8,7 @@ def send_presence():
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     message = input("Your name and surname: ")
-    ip_broadcast = input("Enter the ip address for broadcast: ")
+    ip_broadcast = str(os.system("ifconfig | grep broadcast | awk '{print $NF}'"))
     s.sendto(str(message).encode("utf-8"), (ip_broadcast, 37021))
     print("message sent!")
 
