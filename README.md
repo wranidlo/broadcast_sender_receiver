@@ -1,6 +1,6 @@
 # broadcast_sender_receiver
 
 ## Dependencies
-- notify-send
+- libnotify-bin
 - net-tools
 - git
