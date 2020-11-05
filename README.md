@@ -3,3 +3,4 @@
 ## Dependencies
 - notify-send
 - net-tools
+- git
