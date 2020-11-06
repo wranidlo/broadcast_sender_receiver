@@ -19,6 +19,26 @@ class Ui_Dialog(object):
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.line_edit_ip = QtWidgets.QLineEdit(Dialog)
+        self.line_edit_ip.setStyleSheet("QLineEdit{\n"
+"border:2px solid gray;\n"
+"border-radius:2 px;\n"
+"selection-background-color:darkblue;\n"
+"\n"
+"}")
+        self.line_edit_ip.setObjectName("line_edit_ip")
+        self.horizontalLayout_2.addWidget(self.line_edit_ip)
+        self.button_ip = QtWidgets.QPushButton(Dialog)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.button_ip.setFont(font)
+        self.button_ip.setObjectName("button_ip")
+        self.horizontalLayout_2.addWidget(self.button_ip)
+        self.gridLayout.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.line_edit_messege = QtWidgets.QLineEdit(Dialog)
@@ -44,7 +64,7 @@ class Ui_Dialog(object):
         self.button_send.setToolTipDuration(-1)
         self.button_send.setObjectName("button_send")
         self.horizontalLayout.addWidget(self.button_send)
-        self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout, 5, 0, 1, 1)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.list_chat = QtWidgets.QListWidget(Dialog)
@@ -68,6 +88,8 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Communicator"))
+        self.line_edit_ip.setPlaceholderText(_translate("Dialog", "255.255.255.255"))
+        self.button_ip.setText(_translate("Dialog", "Change broadcast"))
         self.line_edit_messege.setToolTip(_translate("Dialog", "Input message"))
         self.button_send.setToolTip(_translate("Dialog", "<html><head/><body><p>Send message to all users</p></body></html>"))
         self.button_send.setText(_translate("Dialog", "Send"))
