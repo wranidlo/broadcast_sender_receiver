@@ -2,6 +2,7 @@ import socket
 import threading
 import sys
 from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5 import QtCore
 
 
 class ThreadedListener(threading.Thread):
@@ -19,9 +20,11 @@ class ThreadedListener(threading.Thread):
         while True:
             try:
                 data, addr = self.listener.recvfrom(2048)
-                item = QListWidgetItem(data.decode("utf-8"))
+                # if addr[1] != self.window.sender.getsockname()[1]:
+                item = QListWidgetItem(addr[0] + " : " + data.decode("utf-8"))
+                item.setForeground(QtCore.Qt.black)
+                item.setTextAlignment(QtCore.Qt.AlignLeft)
                 self.window.list_chat.addItem(item)
-                print(data.decode("utf-8"))
             except socket.timeout:
                 None
 

@@ -1,5 +1,4 @@
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
+from PyQt5.QtWidgets import QApplication, QDialog, QScrollBar
 
 from mess.threded_listener import *
 from mess.gui import Ui_Dialog
@@ -16,11 +15,17 @@ class Window(Ui_Dialog, QDialog):
 
         self.button_send.clicked.connect(self.send)
 
+        scroll_bar = QScrollBar(self)
+        scroll_bar.setStyleSheet("background : lightgreen;")
+        self.list_chat.setVerticalScrollBar(scroll_bar)
+
     def send(self):
-        text = self.line_edit_messege.text()
-        item = QListWidgetItem(text)
+        message = self.line_edit_messege.text()
+        item = QListWidgetItem(message + " : Me")
+        item.setForeground(QtCore.Qt.blue)
+        item.setTextAlignment(QtCore.Qt.AlignRight)
         self.list_chat.addItem(item)
-        self.sender.sendto(text.encode("utf-8"), ("255.255.255.255", 37021))
+        self.sender.sendto(message.encode("utf-8"), ("255.255.255.255", 37021))
         self.line_edit_messege.setText("")
 
 
@@ -32,8 +37,8 @@ if __name__ == '__main__':
     thread_listening = ThreadedListener(window)
     thread_listening.start()
 
-    window.exec()
+    window.show()
+    app.exec_()
 
     thread_listening.kill()
     thread_listening.join()
-    sys.exit(app.exec_())

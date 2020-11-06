@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>412</height>
+    <width>300</width>
+    <height>400</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>300</width>
+    <height>400</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Communicator</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -19,10 +25,42 @@
      <item row="1" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLineEdit" name="line_edit_messege"/>
+        <widget class="QLineEdit" name="line_edit_messege">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Input message</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLineEdit{
+border:2px solid gray;
+border-radius:2 px;
+selection-background-color:darkblue;
+
+}</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="button_send">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Send message to all users&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="toolTipDuration">
+          <number>-1</number>
+         </property>
          <property name="text">
           <string>Send</string>
          </property>
@@ -33,7 +71,26 @@
      <item row="0" column="0">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QListWidget" name="list_chat"/>
+        <widget class="QListWidget" name="list_chat">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Send message to all users&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QListWidget{
+border:2px solid gray;
+}</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
