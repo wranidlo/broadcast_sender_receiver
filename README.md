@@ -4,3 +4,4 @@
 - libnotify-bin
 - net-tools
 - git
+- python3-pip

@@ -34,15 +34,15 @@ class Window(Ui_Dialog, QDialog):
             self.ip_broadcast = "255.255.255.255"
             self.line_edit_ip.setText("Wrong  address")
 
-
     def change_ip(self):
-        self.ip_broadcast = self.line_edit_messege.text()
+        self.ip_broadcast = self.line_edit_ip.text()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     window = Window()
+    window.sender.sendto(str("This message is for starting 1.982789").encode("utf-8"), (window.ip_broadcast, 37021))
 
     thread_listening = ThreadedListener(window)
     thread_listening.start()

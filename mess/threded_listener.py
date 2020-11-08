@@ -20,11 +20,13 @@ class ThreadedListener(threading.Thread):
         while True:
             try:
                 data, addr = self.listener.recvfrom(2048)
-                # if addr[1] != self.window.sender.getsockname()[1]:
-                item = QListWidgetItem(addr[0] + " : " + data.decode("utf-8"))
-                item.setForeground(QtCore.Qt.black)
-                item.setTextAlignment(QtCore.Qt.AlignLeft)
-                self.window.list_chat.addItem(item)
+                if data.decode("utf-8") == "This message is for starting 1.982789":
+                    continue
+                if addr[1] != self.window.sender.getsockname()[1]:
+                    item = QListWidgetItem(addr[0] + " : " + data.decode("utf-8"))
+                    item.setForeground(QtCore.Qt.black)
+                    item.setTextAlignment(QtCore.Qt.AlignLeft)
+                    self.window.list_chat.addItem(item)
             except socket.timeout:
                 None
 
