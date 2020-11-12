@@ -10,7 +10,7 @@ class Sender:
 
     def set_broadcast_ip(self):
         # self.ip_broadcast = str(system("ifconfig | grep broadcast | awk '{print $NF}'"))
-        self.ip_broadcast = "255.255.255.255"
+        self.ip_broadcast = str(input("Input broadcast ip: "))
 
     def send_broadcast_message(self, message):
         self.server.sendto(message, (self.ip_broadcast, 37020))

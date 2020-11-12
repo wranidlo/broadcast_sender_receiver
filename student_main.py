@@ -28,7 +28,9 @@ class input_dialog(Ui_Form, QWidget):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        s.sendto(str(message).encode("utf-8"), ("255.255.255.255", 37021))
+        # ip_broadcast = str(os.system("ifconfig | grep broadcast | awk '{print $NF}'"))
+        ip_broadcast = "255.255.255.255"
+        s.sendto(str(message).encode("utf-8"), (ip_broadcast, 37021))
         print("message sent!")
         self.close()
 
@@ -61,11 +63,11 @@ if __name__ == '__main__':
     while True:
         data, addr = student.receive_message(1024)
         data = data.decode("utf-8")
+        os.system("notify-send \"Message\" \"%s\"" % data)
         if data == "Attendance check":
             app = QApplication(sys.argv)
             ex = input_dialog()
             ex.show()
             app.exec_()
         print(data)
-        os.system("notify-send \"Message\" \"%s\"" % data)
         student.logger.info(data)
