@@ -1,6 +1,6 @@
 import time
-from master.server import Sender
-from master.server_thread import ThreadedListener , listen
+from profesor.server import Sender
+from profesor.server_thread import ThreadedListener , listen
 
 
 def title_bar():
@@ -10,7 +10,8 @@ def title_bar():
 
 
 def user_choice():
-    print("\n[1] Send broadcast message")
+    print("[1] Send broadcast message\n")
+    print("[2] Check attendance\n")
     print("[q] Quit.")
     return input("What would you like to do? ")
 
@@ -29,6 +30,10 @@ if __name__ == '__main__':
         choice = user_choice()
         if choice == "1":
             message = str(input("Message to send: ")).encode("utf-8")
+            sender.send_broadcast_message(message)
+            time.sleep(1)
+        if choice == "2":
+            message = str("Attendance check").encode("utf-8")
             sender.send_broadcast_message(message)
             time.sleep(1)
 

@@ -51,6 +51,9 @@ selection-background-color:darkblue;
          <property name="text">
           <string>Change broadcast</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -96,6 +99,12 @@ selection-background-color:darkblue;
          </property>
          <property name="text">
           <string>Send</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="default">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

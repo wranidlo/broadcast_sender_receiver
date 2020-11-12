@@ -1,6 +1,10 @@
 import socket
 import os
 import logging
+import sys
+
+from PyQt5.QtWidgets import QWidget, QApplication
+from student.attendance import *
 
 
 def send_presence():
@@ -11,6 +15,22 @@ def send_presence():
     ip_broadcast = str(os.system("ifconfig | grep broadcast | awk '{print $NF}'"))
     s.sendto(str(message).encode("utf-8"), (ip_broadcast, 37021))
     print("message sent!")
+
+
+class input_dialog(Ui_Form, QWidget):
+    def __init__(self):
+        super(input_dialog, self).__init__()
+        self.setupUi(self)
+        self.button_send.clicked.connect(self.send_presence)
+
+    def send_presence(self):
+        message = self.edit_full_name.text()
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        s.sendto(str(message).encode("utf-8"), ("255.255.255.255", 37021))
+        print("message sent!")
+        self.close()
 
 
 class Client:
@@ -36,12 +56,16 @@ class Client:
 
 
 if __name__ == '__main__':
-    send_presence()
     student = Client()
     student.start()
     while True:
         data, addr = student.receive_message(1024)
         data = data.decode("utf-8")
-        print("received message: %s" % data)
+        if data == "Attendance check":
+            app = QApplication(sys.argv)
+            ex = input_dialog()
+            ex.show()
+            app.exec_()
+        print(data)
         os.system("notify-send \"Message\" \"%s\"" % data)
         student.logger.info(data)
