@@ -17,7 +17,7 @@ def send_presence():
     print("message sent!")
 
 
-class input_dialog(Ui_Form, QWidget):
+class input_dialog(Ui_Attendance, QWidget):
     def __init__(self):
         super(input_dialog, self).__init__()
         self.setupUi(self)
@@ -31,9 +31,7 @@ class input_dialog(Ui_Form, QWidget):
         # ip_broadcast = str(os.system("ifconfig | grep broadcast | awk '{print $NF}'"))
         ip_broadcast = "255.255.255.255"
         s.sendto(str(message).encode("utf-8"), (ip_broadcast, 37021))
-        print("message sent!")
         self.close()
-
 
 class Client:
     def __init__(self):
@@ -69,5 +67,4 @@ if __name__ == '__main__':
             ex = input_dialog()
             ex.show()
             app.exec_()
-        print(data)
         student.logger.info(data)
