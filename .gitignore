@@ -5,3 +5,4 @@ profesor/__pycache__/server.cpython-38.pyc
 mess/__pycache__/gui.cpython-38.pyc
 mess/__pycache__/threded_listener.cpython-38.pyc
 profesor/__pycache__/server_thread.cpython-38.pyc
+student/__pycache__/attendance.cpython-38.pyc
