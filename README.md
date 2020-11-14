@@ -1,6 +1,6 @@
 # broadcast_sender_receiver
 
-To run client_main in background:
+To run in background (on example of student_main.py):
 - chmod +x student_main.py
 - nohup python3 ~/broadcast_sender_receiver/student_main.py &
 
