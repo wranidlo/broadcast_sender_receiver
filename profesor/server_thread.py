@@ -11,7 +11,7 @@ def listen():
     listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listener.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     listener.settimeout(1)
-    listener.bind(("", 37021))
+    listener.bind(("", 37020))
     while True:
         try:
             message, addr = listener.recvfrom(4096)

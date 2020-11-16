@@ -2,6 +2,7 @@ import socket
 import os
 import logging
 import sys
+import json
 
 from PyQt5.QtWidgets import QWidget, QApplication
 from student.attendance import *
@@ -33,15 +34,9 @@ class input_dialog(Ui_Attendance, QWidget):
         s.sendto(str(message).encode("utf-8"), (ip_broadcast, 37020))
         self.close()
 
+
 class Client:
     def __init__(self):
-        self.logger = logging.getLogger('broadcast_app')
-        handler = logging.FileHandler('broadcast_app.log')
-        formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
-        self.logger.setLevel(logging.INFO)
-
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -64,9 +59,10 @@ if __name__ == '__main__':
         print(data)
         if data != "This message is for starting 1.982789":
             os.system("notify-send \"Message\" \"%s\"" % data)
+            with open("mess/chat.txt", "a") as outfile:
+                outfile.write('{"user_ip": "' + addr[0] + '", "user_port": "' + str(addr[1]) + '", "message":"' + data + '"}\n')
         if data == "Attendance check":
             app = QApplication(sys.argv)
             ex = input_dialog()
             ex.show()
             app.exec_()
-        student.logger.info(data)

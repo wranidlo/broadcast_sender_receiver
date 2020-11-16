@@ -13,5 +13,5 @@ class Sender:
         self.ip_broadcast = str(input("Input broadcast ip: "))
 
     def send_broadcast_message(self, message):
-        self.server.sendto(message, (self.ip_broadcast, 37020))
+        self.server.sendto(message, (self.ip_broadcast, 37021))
         print("message sent!")
