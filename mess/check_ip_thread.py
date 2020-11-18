@@ -11,12 +11,14 @@ class IpChecker(threading.Thread):
         self.listener = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.listener.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.listener.bind(("", 37021))
+        self.listener.bind(("", 37022))
 
     def run(self):
-        data, addr = self.listener.recvfrom(2048)
-        if data.decode("utf-8") == "This message is for starting 1.982789":
-            self.window.my_ip = addr
+        while True:
+            data, addr = self.listener.recvfrom(2048)
+            if data.decode("utf-8") == "This message is for starting 1.982789":
+                self.window.my_ip = addr
+                break
 
     def start(self):
         self.__run_backup = self.run

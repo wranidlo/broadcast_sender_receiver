@@ -27,15 +27,18 @@ class ThreadedLoader(threading.Thread):
                     message = json.loads(line).get("message")
 
                     # delete checking user port when not on localhost
-                    if str(user_ip) == str(self.window.my_ip[0]) and int(user_port) == int(self.window.my_ip[1]):
-                        item = QListWidgetItem(message + " : " + "Me")
-                        item.setForeground(QtCore.Qt.blue)
-                        item.setTextAlignment(QtCore.Qt.AlignRight)
-                    else:
-                        item = QListWidgetItem(user_ip + " : " + message)
-                        item.setForeground(QtCore.Qt.black)
-                        item.setTextAlignment(QtCore.Qt.AlignLeft)
-                    self.window.list_chat.addItem(item)
+                    try:
+                        if str(user_ip) == str(self.window.my_ip[0]):#  and int(user_port) == int(self.window.my_ip[1]):
+                            item = QListWidgetItem(message + " : " + "Me")
+                            item.setForeground(QtCore.Qt.blue)
+                            item.setTextAlignment(QtCore.Qt.AlignRight)
+                        else:
+                            item = QListWidgetItem(user_ip + " : " + message)
+                            item.setForeground(QtCore.Qt.black)
+                            item.setTextAlignment(QtCore.Qt.AlignLeft)
+                        self.window.list_chat.addItem(item)
+                    except TypeError:
+                        print("No address ip yet")
             self.window.list_chat.scrollToBottom()
             time.sleep(0.25)
 

@@ -67,10 +67,7 @@ if __name__ == '__main__':
     check = IpChecker(window)
     check.start()
 
-    window.sender.sendto(str("This message is for starting 1.982789").encode("utf-8"), (window.ip_broadcast, 37021))
-
-    check.kill()
-    check.join()
+    window.sender.sendto(str("This message is for starting 1.982789").encode("utf-8"), (window.ip_broadcast, 37022))
 
     window.load_chat()
     thread_listening = ThreadedLoader(window)
@@ -78,6 +75,9 @@ if __name__ == '__main__':
 
     window.show()
     app.exec_()
+
+    check.kill()
+    check.join()
 
     thread_listening.kill()
     thread_listening.join()
