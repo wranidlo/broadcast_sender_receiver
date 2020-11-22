@@ -79,8 +79,6 @@ if __name__ == '__main__':
 
     window = Window()
 
-    window.sender.sendto(str("This message is for starting 1.982789").encode("utf-8"), (window.ip_broadcast, 37022))
-
     window.load_chat()
     thread_listening = ThreadedLoader(window)
     thread_listening.start()

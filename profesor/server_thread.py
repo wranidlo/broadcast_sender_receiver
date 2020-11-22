@@ -7,9 +7,8 @@ import trace
 
 
 def listen():
-    listener = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    listener = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    listener.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     listener.settimeout(1)
     listener.bind(("", 37020))
     while True:
