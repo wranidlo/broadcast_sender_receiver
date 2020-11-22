@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QApplication, QDialog, QScrollBar
 
 from mess.threded_loader_test_phase import *
 from mess.gui import Ui_Dialog
-from mess.check_ip_thread import IpChecker
 import json
+import netifaces as ni
 
 
 class Window(Ui_Dialog, QDialog):
@@ -11,8 +11,8 @@ class Window(Ui_Dialog, QDialog):
         self.sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.ip_broadcast = "255.255.255.255"
-        self.my_ip = None
+        self.ip_broadcast = "127.255.255.255"
+        self.my_ip = "127.0.0.1"
         super(Window, self).__init__()
         self.setupUi(self)
         self.flag = 0
@@ -31,7 +31,7 @@ class Window(Ui_Dialog, QDialog):
             try:
                 user = json.loads(line).get("user_ip")
                 message = json.loads(line).get("message")
-                if user == self.sender.getsockname()[1]:
+                if user == self.my_ip:
                     item = QListWidgetItem(message + " : Me")
                     item.setForeground(QtCore.Qt.blue)
                     item.setTextAlignment(QtCore.Qt.AlignRight)
@@ -42,6 +42,8 @@ class Window(Ui_Dialog, QDialog):
                 self.list_chat.addItem(item)
             except json.decoder.JSONDecodeError:
                 continue
+
+
     def send(self):
         message = self.line_edit_messege.text()
         try:
@@ -52,20 +54,30 @@ class Window(Ui_Dialog, QDialog):
             self.list_chat.addItem(item)
             self.line_edit_messege.setText("")
         except socket.error:
-            self.ip_broadcast = "255.255.255.255"
+            self.ip_broadcast = "127.255.255.255"
+            self.my_ip = "127.0.0.1"
             self.line_edit_ip.setText("Wrong  address")
 
     def change_ip(self):
+        self.list_chat.clear()
         self.ip_broadcast = self.line_edit_ip.text()
+        for e in ni.interfaces():
+            try:
+                if ni.ifaddresses(e).get(2)[0] is not None:
+                    if ni.ifaddresses(e).get(2)[0].get("broadcast") == self.ip_broadcast:
+                        self.my_ip = ni.ifaddresses(e).get(2)[0].get("addr")
+                        break
+            except:
+                self.ip_broadcast = "127.255.255.255"
+                self.my_ip = "127.0.0.1"
+                self.line_edit_ip.setText("127.255.255.255")
+        self.load_chat()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     window = Window()
-
-    check = IpChecker(window)
-    check.start()
 
     window.sender.sendto(str("This message is for starting 1.982789").encode("utf-8"), (window.ip_broadcast, 37022))
 
@@ -75,9 +87,6 @@ if __name__ == '__main__':
 
     window.show()
     app.exec_()
-
-    check.kill()
-    check.join()
 
     thread_listening.kill()
     thread_listening.join()

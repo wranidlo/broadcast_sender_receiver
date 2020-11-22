@@ -28,7 +28,7 @@ class ThreadedLoader(threading.Thread):
 
                     # delete checking user port when not on localhost
                     try:
-                        if str(user_ip) == str(self.window.my_ip[0]):#  and int(user_port) == int(self.window.my_ip[1]):
+                        if str(user_ip) == str(self.window.my_ip):#  and int(user_port) == int(self.window.my_ip[1]):
                             item = QListWidgetItem(message + " : " + "Me")
                             item.setForeground(QtCore.Qt.blue)
                             item.setTextAlignment(QtCore.Qt.AlignRight)
