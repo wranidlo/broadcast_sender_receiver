@@ -1,4 +1,5 @@
-import socket
+import os.path
+from os import path
 import threading
 import sys
 from PyQt5.QtWidgets import QListWidgetItem
@@ -16,8 +17,8 @@ class ThreadedLoader(threading.Thread):
 
     def run(self):
         while True:
-            file1 = open('mess/chat.txt', 'r')
-            lines = file1.readlines()
+            file = open('mess/chat.txt', 'r')
+            lines = file.readlines()
             if len(lines) > self.lines_number:
                 self.lines_number = len(lines)
                 self.window.list_chat.clear()
@@ -25,10 +26,8 @@ class ThreadedLoader(threading.Thread):
                     user_ip = json.loads(line).get("user_ip")
                     user_port = json.loads(line).get("user_port")
                     message = json.loads(line).get("message")
-
-                    # delete checking user port when not on localhost
                     try:
-                        if str(user_ip) == str(self.window.my_ip):#  and int(user_port) == int(self.window.my_ip[1]):
+                        if str(user_ip) == str(self.window.my_ip):
                             item = QListWidgetItem(message + " : " + "Me")
                             item.setForeground(QtCore.Qt.blue)
                             item.setTextAlignment(QtCore.Qt.AlignRight)

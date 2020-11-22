@@ -2,8 +2,6 @@ import socket
 from datetime import date
 import threading
 import sys
-import time
-import trace
 
 
 def listen():
