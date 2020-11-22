@@ -91,7 +91,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Communicator"))
-        self.line_edit_ip.setPlaceholderText(_translate("Dialog", "127.255.255.255"))
+        self.line_edit_ip.setPlaceholderText(_translate("Dialog", "127.0.0.255"))
         self.button_ip.setText(_translate("Dialog", "Change broadcast"))
         self.line_edit_messege.setToolTip(_translate("Dialog", "Input message"))
         self.button_send.setToolTip(_translate("Dialog", "<html><head/><body><p>Send message to all users</p></body></html>"))
