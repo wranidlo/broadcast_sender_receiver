@@ -1,11 +1,12 @@
 import time
+import json
 from profesor.server import Sender
 from profesor.server_thread import ThreadedListener , listen
 
 
 def title_bar():
     print("\t**********************************************")
-    print("\t**************   Communicator   **************")
+    print("\t**************  Professor  app  **************")
     print("\t**********************************************")
 
 
@@ -29,12 +30,14 @@ if __name__ == '__main__':
     while choice != 'q':
         choice = user_choice()
         if choice == "1":
-            message = str(input("Message to send: ")).encode("utf-8")
-            sender.send_broadcast_message(message)
+            message = str(input("Message to send: "))
+            message_json = json.dumps({"message": message, "who": "professor", "type": "message"})
+            sender.send_broadcast_message(message_json.encode("utf-8"))
             time.sleep(1)
         if choice == "2":
-            message = str("Attendance check").encode("utf-8")
-            sender.send_broadcast_message(message)
+            message = str("Attendance check")
+            message_json = json.dumps({"message": message, "who": "professor", "type": "attendance"})
+            sender.send_broadcast_message(message_json.encode("utf-8"))
             time.sleep(1)
 
     s.kill()

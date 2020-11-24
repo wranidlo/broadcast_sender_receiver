@@ -23,21 +23,22 @@ class ThreadedLoader(threading.Thread):
                 self.lines_number = len(lines)
                 self.window.list_chat.clear()
                 for line in lines:
-                    user_ip = json.loads(line).get("user_ip")
-                    user_port = json.loads(line).get("user_port")
-                    message = json.loads(line).get("message")
+                    line_json = json.loads(line)
+                    user_ip = line_json.get("user_ip")
+                    message = line_json.get("message")
                     try:
-                        if str(user_ip) == str(self.window.my_ip):
-                            item = QListWidgetItem(message + " : " + "Me")
-                            item.setForeground(QtCore.Qt.blue)
-                            item.setTextAlignment(QtCore.Qt.AlignRight)
-                        else:
-                            item = QListWidgetItem(user_ip + " : " + message)
-                            item.setForeground(QtCore.Qt.black)
-                            item.setTextAlignment(QtCore.Qt.AlignLeft)
-                        self.window.list_chat.addItem(item)
+                        if str(line_json.get("broadcast")) == self.window.ip_broadcast:
+                            if str(user_ip) == str(self.window.my_ip):
+                                item = QListWidgetItem(message + " : " + "Me")
+                                item.setForeground(QtCore.Qt.blue)
+                                item.setTextAlignment(QtCore.Qt.AlignRight)
+                            else:
+                                item = QListWidgetItem(user_ip + " : " + message)
+                                item.setForeground(QtCore.Qt.black)
+                                item.setTextAlignment(QtCore.Qt.AlignLeft)
+                            self.window.list_chat.addItem(item)
                     except TypeError:
-                        print("No address ip yet")
+                        print("Type error")
             self.window.list_chat.scrollToBottom()
             time.sleep(0.25)
 

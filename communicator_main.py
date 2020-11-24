@@ -32,22 +32,24 @@ class Window(Ui_Dialog, QDialog):
             try:
                 user = json.loads(line).get("user_ip")
                 message = json.loads(line).get("message")
-                if user == self.my_ip:
-                    item = QListWidgetItem(message + " : Me")
-                    item.setForeground(QtCore.Qt.blue)
-                    item.setTextAlignment(QtCore.Qt.AlignRight)
-                else:
-                    item = QListWidgetItem(user + " : " + message)
-                    item.setForeground(QtCore.Qt.black)
-                    item.setTextAlignment(QtCore.Qt.AlignLeft)
-                self.list_chat.addItem(item)
+                if str(json.loads(line).get("broadcast")) == self.ip_broadcast:
+                    if user == self.my_ip:
+                        item = QListWidgetItem(message + " : Me")
+                        item.setForeground(QtCore.Qt.blue)
+                        item.setTextAlignment(QtCore.Qt.AlignRight)
+                    else:
+                        item = QListWidgetItem(user + " : " + message)
+                        item.setForeground(QtCore.Qt.black)
+                        item.setTextAlignment(QtCore.Qt.AlignLeft)
+                    self.list_chat.addItem(item)
             except json.decoder.JSONDecodeError:
-                continue
+                print("Encoder error")
 
     def send(self):
         message = self.line_edit_messege.text()
+        message_json = {"message": message, "broadcast": self.ip_broadcast, "type": "communicator"}
         try:
-            self.sender.sendto(message.encode("utf-8"), (self.ip_broadcast, 37021))
+            self.sender.sendto(json.dumps(message_json).encode("utf-8"), (self.ip_broadcast, 37021))
             item = QListWidgetItem(message + " : Me")
             item.setForeground(QtCore.Qt.blue)
             item.setTextAlignment(QtCore.Qt.AlignRight)
@@ -56,21 +58,22 @@ class Window(Ui_Dialog, QDialog):
         except socket.error:
             self.ip_broadcast = "127.255.255.255"
             self.my_ip = "127.0.0.1"
-            self.line_edit_ip.setText("Wrong  address")
+            self.line_edit_ip.setText("Wrong address")
 
     def change_ip(self):
         self.list_chat.clear()
-        self.ip_broadcast = self.line_edit_ip.text()
-        for e in ni.interfaces():
-            try:
-                if ni.ifaddresses(e).get(2)[0] is not None:
-                    if ni.ifaddresses(e).get(2)[0].get("broadcast") == self.ip_broadcast:
+        if self.line_edit_ip.text() == "127.255.255.255":
+            self.ip_broadcast = "127.255.255.255"
+            self.my_ip = "127.0.0.1"
+        else:
+            for e in ni.interfaces():
+                try:
+                    if ni.ifaddresses(e).get(2)[0].get("broadcast") == self.line_edit_ip.text():
+                        self.ip_broadcast = self.line_edit_ip.text()
                         self.my_ip = ni.ifaddresses(e).get(2)[0].get("addr")
                         break
-            except:
-                self.ip_broadcast = "127.255.255.255"
-                self.my_ip = "127.0.0.1"
-                self.line_edit_ip.setText("127.255.255.255")
+                except:
+                    self.line_edit_ip.setText("Wrong address")
         self.load_chat()
 
 

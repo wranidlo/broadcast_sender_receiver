@@ -1,23 +1,27 @@
 import socket
 import os
 import sys
+import json
 
 from PyQt5.QtWidgets import QWidget, QApplication
 from student.attendance import *
 
 
 class input_dialog(Ui_Attendance, QWidget):
-    def __init__(self, addr):
+    def __init__(self, address):
         super(input_dialog, self).__init__()
         self.setupUi(self)
-        self.addr = addr
+        self.addr = address
         self.button_send.clicked.connect(self.send_presence)
 
     def send_presence(self):
-        message = self.edit_full_name.text()
+        name = self.line_edit_name.text()
+        surname = self.line_edit_surname.text()
+        index = self.line_edit_index.text()
+        message = {"name": name, "surname": surname, "index": index}
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.sendto(str(message).encode("utf-8"), (str(self.addr), 37020))
+        s.sendto(str(json.dumps(message)).encode("utf-8"), (str(self.addr), 37020))
         self.close()
 
 
@@ -36,20 +40,27 @@ class Client:
         return self.client.recvfrom(length)
 
 
+def pop_up_dialog(address):
+    app = QApplication(sys.argv)
+    ex = input_dialog(address[0])
+    ex.show()
+    app.exec_()
+
+
 if __name__ == '__main__':
     student = Client()
     student.start()
     while True:
         data, addr = student.receive_message(1024)
-        data = data.decode("utf-8")
-        print(data)
-        if data != "Attendance check":
-            os.system("notify-send \"Message\" \"%s\"" % data)
+        data = json.loads(data.decode("utf-8"))
+        if data.get("type") == "communicator":
+            os.system("notify-send \"Message from communicator\" \"%s\"" % data.get("message"))
             with open("mess/chat.txt", "a") as outfile:
-                outfile.write('{"user_ip": "' + addr[0] + '", "user_port": "' + str(addr[1]) + '", "message":"' + data + '"}\n')
+                outfile.write('{"user_ip": "' + str(addr[0]) + '", "broadcast": "' + str(data.get("broadcast")) +
+                              '", "message": "' + str(data.get("message")) + '"}\n')
         else:
-            os.system("notify-send \"Message\" \"%s\"" % data)
-            app = QApplication(sys.argv)
-            ex = input_dialog(addr[0])
-            ex.show()
-            app.exec_()
+            if data.get("type") == "attendance":
+                os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))
+                pop_up_dialog(addr)
+            else:
+                os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))
