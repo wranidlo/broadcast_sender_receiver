@@ -7,6 +7,16 @@ import netifaces as ni
 import socket
 
 
+def get_broadcasts_interfaces():
+    broadcasts_list = []
+    for e in ni.interfaces():
+        try:
+            broadcasts_list.append(ni.ifaddresses(e).get(2)[0].get("broadcast"))
+        except TypeError:
+            None
+    return broadcasts_list
+
+
 class Window(Ui_Dialog, QDialog):
     def __init__(self):
         self.sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -24,6 +34,9 @@ class Window(Ui_Dialog, QDialog):
         scroll_bar = QScrollBar(self)
         scroll_bar.setStyleSheet("background : lightgreen;")
         self.list_chat.setVerticalScrollBar(scroll_bar)
+
+        list_broad_interfaces = '\n'.join([str(elem) for elem in get_broadcasts_interfaces()])
+        self.line_edit_ip.setToolTip("Possible broadcasts: \n" + list_broad_interfaces)
 
     def load_chat(self):
         file = open('mess/chat.txt', 'r')

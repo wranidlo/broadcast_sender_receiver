@@ -26,6 +26,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLineEdit" name="line_edit_ip">
+         <property name="toolTip">
+          <string>empty</string>
+         </property>
          <property name="styleSheet">
           <string notr="true">QLineEdit{
 border:2px solid gray;
