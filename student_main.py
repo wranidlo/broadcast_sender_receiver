@@ -57,7 +57,8 @@ if __name__ == '__main__':
             os.system("notify-send \"Message from communicator\" \"%s\"" % data.get("message"))
             with open("mess/chat.txt", "a") as outfile:
                 outfile.write('{"user_ip": "' + str(addr[0]) + '", "broadcast": "' + str(data.get("broadcast")) +
-                              '", "message": "' + str(data.get("message")) + '"}\n')
+                              '"}\n')
+                outfile.write(str(data.get("message").replace('\n', '\\n'))+"\n")
         else:
             if data.get("type") == "attendance":
                 os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))

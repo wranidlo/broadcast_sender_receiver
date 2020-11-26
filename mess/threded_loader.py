@@ -1,5 +1,3 @@
-import os.path
-from os import path
 import threading
 import sys
 from PyQt5.QtWidgets import QListWidgetItem
@@ -22,23 +20,24 @@ class ThreadedLoader(threading.Thread):
             if len(lines) > self.lines_number:
                 self.lines_number = len(lines)
                 self.window.list_chat.clear()
+                iterator = 1
                 for line in lines:
-                    line_json = json.loads(line)
-                    user_ip = line_json.get("user_ip")
-                    message = line_json.get("message")
-                    try:
-                        if str(line_json.get("broadcast")) == self.window.ip_broadcast:
+                    if iterator % 2 == 1:
+                        line_json = json.loads(line)
+                        user_ip = line_json.get("user_ip")
+                        broadcast = line_json.get("broadcast")
+                    else:
+                        if str(broadcast) == self.window.ip_broadcast:
                             if str(user_ip) == str(self.window.my_ip):
-                                item = QListWidgetItem(message + " : " + "Me")
+                                item = QListWidgetItem("-- Me --\n" + line.replace('\\n', '\n'))
                                 item.setForeground(QtCore.Qt.blue)
-                                item.setTextAlignment(QtCore.Qt.AlignRight)
+                                item.setTextAlignment(QtCore.Qt.AlignLeft)
                             else:
-                                item = QListWidgetItem(user_ip + " : " + message)
-                                item.setForeground(QtCore.Qt.black)
+                                item = QListWidgetItem(user_ip + " : " + line.replace('\\n', '\n'))
+                                item.setForeground(QtCore.Qt.green)
                                 item.setTextAlignment(QtCore.Qt.AlignLeft)
                             self.window.list_chat.addItem(item)
-                    except TypeError:
-                        print("Type error")
+                    iterator += 1
             self.window.list_chat.scrollToBottom()
             time.sleep(0.25)
 
