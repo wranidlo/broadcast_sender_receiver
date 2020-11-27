@@ -11,3 +11,4 @@ mess/__pycache__/check_ip_thread.cpython-38.pyc
 profesor/__pycache__/server.cpython-37.pyc
 profesor/__pycache__/server_thread.cpython-37.pyc
 mess/__pycache__/threded_loader.cpython-38.pyc
+*.pyc

@@ -1,10 +1,13 @@
 import socket
 from datetime import date
+from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5 import QtCore
 import threading
 import sys
+import json
 
 
-def listen():
+def listen(window):
     listener = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listener.settimeout(1)
@@ -12,9 +15,14 @@ def listen():
     while True:
         try:
             message, addr = listener.recvfrom(4096)
-            print("Presence reported: ", message.decode("utf-8"))
-            f = open("presence" + str(date.today()) + ".txt ", "a")
-            f.write(message.decode("utf-8") + " - " + str(addr) + "\n")
+            message = message.decode("utf-8")
+            print("Presence reported: ", message)
+            item = QListWidgetItem(message)
+            item.setForeground(QtCore.Qt.blue)
+            item.setTextAlignment(QtCore.Qt.AlignLeft)
+            window.list_widget_students.addItem(item)
+            f = open("presence.txt ", "a")
+            f.write(message + "\n")
             f.close()
         except socket.timeout:
             None

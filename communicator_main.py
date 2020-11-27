@@ -53,7 +53,7 @@ class Window(Ui_Dialog, QDialog):
                     if user == self.my_ip:
                         item = QListWidgetItem("-- Me --\n" + line.replace('\\n', '\n'))
                         item.setForeground(QtCore.Qt.blue)
-                        item.setTextAlignment(QtCore.Qt.AlignRight)
+                        item.setTextAlignment(QtCore.Qt.AlignLeft)
                     else:
                         item = QListWidgetItem(user + " : " + line.replace('\\n', '\n'))
                         item.setForeground(QtCore.Qt.black)
@@ -91,6 +91,7 @@ class Window(Ui_Dialog, QDialog):
 
     def load_broad_ip(self):
         interfaces = get_broadcasts_interfaces()
+        interfaces = list(dict.fromkeys(interfaces))
         self.combo_box_ip.clear()
         if "127.255.255.255" in interfaces:
             interfaces.remove("127.255.255.255")
