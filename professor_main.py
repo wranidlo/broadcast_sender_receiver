@@ -25,6 +25,7 @@ class Window(Ui_Form, QWidget):
         self.setupUi(self)
         self.sender = Sender()
         self.sender.set_broadcast_ip("127.255.255.255")
+        self.student_list = []
 
         self.button_send_message.clicked.connect(self.send_message_broad)
         self.button_attendance.clicked.connect(self.attendance_check)
@@ -33,6 +34,9 @@ class Window(Ui_Form, QWidget):
         self.load_broad_ip()
         self.label_current_data.setText(str("Current broadcast: " + self.sender.ip_broadcast))
         self.button_change_broad.clicked.connect(self.change_ip)
+        self.button_save_students.clicked.connect(self.save_attendance_list)
+        self.button_clear_students.clicked.connect(self.clear_lis_students)
+        self.button_delete_student.clicked.connect(self.delete_student)
 
     def send_message_broad(self):
         message = str(self.line_edit_message.text())
@@ -52,14 +56,13 @@ class Window(Ui_Form, QWidget):
         name = self.line_edit_name.text()
         surname = self.line_edit_surname.text()
         index = self.line_edit_index.text()
-        attendance = str({"name": name, "surname": surname, "index": index})
-        item = QListWidgetItem(attendance)
+        attendance = {"name": name, "surname": surname, "index": index}
+        item = QListWidgetItem(json.dumps(attendance))
         item.setForeground(QtCore.Qt.blue)
         item.setTextAlignment(QtCore.Qt.AlignLeft)
         self.list_widget_students.addItem(item)
-        f = open("presence.txt ", "a")
-        f.write(attendance + "\n")
-        f.close()
+        self.student_list.append(attendance)
+        self.label_current_students.setText("Current students: " + str(len(self.student_list)))
 
     def load_presences(self):
         self.list_widget_students.clear()
@@ -67,10 +70,12 @@ class Window(Ui_Form, QWidget):
             file_info = open('professor/presence.txt', 'r')
             lines = file_info.readlines()
             for line in lines:
+                self.student_list.append(json.loads(line))
                 item = QListWidgetItem(line)
                 item.setForeground(QtCore.Qt.blue)
                 item.setTextAlignment(QtCore.Qt.AlignLeft)
                 self.list_widget_students.addItem(item)
+        self.label_current_students.setText("Current students: " + str(len(self.student_list)))
 
     def load_broad_ip(self):
         interfaces = get_broadcasts_interfaces()
@@ -87,6 +92,26 @@ class Window(Ui_Form, QWidget):
     def change_ip(self):
         self.sender.set_broadcast_ip(self.combo_broad.currentText())
         self.label_current_data.setText(str("Current broadcast: " + self.sender.ip_broadcast))
+
+    def save_attendance_list(self):
+        open("professor/presence.txt", "w").close()
+        for e in self.student_list:
+            with open("professor/presence.txt", "a") as f:
+                f.write(json.dumps(e) + "\n")
+
+    def clear_lis_students(self):
+        self.student_list.clear()
+        self.list_widget_students.clear()
+
+    def delete_student(self):
+        try:
+            selected_text = self.list_widget_students.currentItem().text()
+            selected_row = self.list_widget_students.currentRow()
+            self.list_widget_students.takeItem(selected_row)
+            self.student_list.remove(json.loads(selected_text))
+        except Exception:
+            None
+        self.label_current_students.setText("Current students: " + str(len(self.student_list)))
 
 
 if __name__ == '__main__':

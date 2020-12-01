@@ -1,5 +1,4 @@
 import socket
-from datetime import date
 from PyQt5.QtWidgets import QListWidgetItem
 from PyQt5 import QtCore
 import threading
@@ -21,9 +20,8 @@ def listen(window):
             item.setForeground(QtCore.Qt.blue)
             item.setTextAlignment(QtCore.Qt.AlignLeft)
             window.list_widget_students.addItem(item)
-            f = open("presence.txt ", "a")
-            f.write(message + "\n")
-            f.close()
+            window.student_list.append(json.loads(message))
+            window.label_current_students.setText("Current students: " + str(len(window.student_list)))
         except socket.timeout:
             None
 
