@@ -1,5 +1,5 @@
 [Unit]
-Description=VM communicator module listener service
+Description=VM-communicator-module-listener-service
 After=network.target
 StartLimitIntervalSec=0
 
