@@ -33,12 +33,12 @@ class ThreadedLoader(threading.Thread):
                                 item.setForeground(QtCore.Qt.blue)
                                 item.setTextAlignment(QtCore.Qt.AlignLeft)
                             else:
-                                item = QListWidgetItem(user_ip + " : " + line.replace('\\n', '\n'))
+                                item = QListWidgetItem("-- " + user_ip + " --\n" + line.replace('\\n', '\n'))
                                 item.setForeground(QtCore.Qt.green)
                                 item.setTextAlignment(QtCore.Qt.AlignLeft)
                             self.window.list_chat.addItem(item)
                     iterator += 1
-            self.window.list_chat.scrollToBottom()
+                self.window.list_chat.scrollToBottom()
             time.sleep(0.25)
 
     def start(self):

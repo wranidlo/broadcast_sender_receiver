@@ -55,10 +55,11 @@ class Window(Ui_Dialog, QDialog):
                         item.setForeground(QtCore.Qt.blue)
                         item.setTextAlignment(QtCore.Qt.AlignLeft)
                     else:
-                        item = QListWidgetItem(user + " : " + line.replace('\\n', '\n'))
+                        item = QListWidgetItem("-- " + user + " --\n" + line.replace('\\n', '\n'))
                         item.setForeground(QtCore.Qt.black)
                         item.setTextAlignment(QtCore.Qt.AlignLeft)
                     self.list_chat.addItem(item)
+                    self.list_chat.scrollToBottom()
             iterator += 1
 
     def send(self):

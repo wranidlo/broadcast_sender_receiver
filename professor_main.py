@@ -2,9 +2,9 @@ import sys
 import os.path
 from PyQt5 import QtCore
 import netifaces as ni
-from profesor.server import Sender
-from profesor.server_thread import ThreadedListener, listen
-from profesor.profesor_gui import Ui_Form
+from professor.server import Sender
+from professor.server_thread import ThreadedListener, listen
+from professor.profesor_gui import Ui_Form
 from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem
 import json
 
@@ -63,8 +63,8 @@ class Window(Ui_Form, QWidget):
 
     def load_presences(self):
         self.list_widget_students.clear()
-        if os.path.isfile('presence.txt'):
-            file_info = open('presence.txt', 'r')
+        if os.path.isfile('professor/presence.txt'):
+            file_info = open('professor/presence.txt', 'r')
             lines = file_info.readlines()
             for line in lines:
                 item = QListWidgetItem(line)
