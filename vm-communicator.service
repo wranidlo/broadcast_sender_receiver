@@ -1,0 +1,14 @@
+[Unit]
+Description=VM communicator module listener service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+EnvironmentFile=/etc/systemd/system/vm-communicator.env
+ExecStart=/etc/virtualab/vm-communicator/ python3 student_main.py
+
+[Install]
+WantedBy=multi-user.target
