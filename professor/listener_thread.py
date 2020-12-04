@@ -16,12 +16,14 @@ def listen(window):
             message, addr = listener.recvfrom(4096)
             message = message.decode("utf-8")
             print("Presence reported: ", message)
-            item = QListWidgetItem(message)
-            item.setForeground(QtCore.Qt.blue)
-            item.setTextAlignment(QtCore.Qt.AlignLeft)
-            window.list_widget_students.addItem(item)
-            window.student_list.append(json.loads(message))
-            window.label_current_students.setText("Current students: " + str(len(window.student_list)))
+            if not any(d["index"] == json.loads(message)["index"] for d in window.student_list):
+                item = QListWidgetItem(message)
+                item.setForeground(QtCore.Qt.blue)
+                item.setTextAlignment(QtCore.Qt.AlignLeft)
+                window.list_widget_students.addItem(item)
+                window.student_list.append(json.loads(message))
+                window.label_current_students.setText("Current students: " + str(len(window.student_list)))
+                window.load_students_absent()
         except socket.timeout:
             None
 

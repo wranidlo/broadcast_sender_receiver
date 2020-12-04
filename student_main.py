@@ -33,8 +33,8 @@ class Client:
 
     def start(self):
         self.client.bind(("", 37021))
-        print(self.client.getsockname())
-        print("Listening")
+        # print(self.client.getsockname())
+        # print("Listening")
 
     def receive_message(self, length):
         return self.client.recvfrom(length)
@@ -52,7 +52,6 @@ if __name__ == '__main__':
     student.start()
     while True:
         data, addr = student.receive_message(1024)
-        print(data, addr)
         data = json.loads(data.decode("utf-8"))
         if data.get("type") == "communicator":
             os.system("notify-send \"Message from communicator\" \"%s\"" % data.get("message"))
