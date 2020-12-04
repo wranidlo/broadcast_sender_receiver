@@ -37,6 +37,16 @@ class Window(Ui_Form, QWidget):
         self.button_save_students.clicked.connect(self.save_attendance_list)
         self.button_clear_students.clicked.connect(self.clear_lis_students)
         self.button_delete_student.clicked.connect(self.delete_student)
+        self.load_students()
+
+    def load_students(self):
+        file = open("professor/students_list")
+        students_json = json.load(file)
+        for e in students_json["students"]:
+            item = QListWidgetItem(e["name"] + " " + e["surname"] + " : " + e["index"])
+            item.setForeground(QtCore.Qt.black)
+            item.setTextAlignment(QtCore.Qt.AlignRight)
+            self.list_widget_absent.addItem(item)
 
     def send_message_broad(self):
         message = str(self.line_edit_message.text())

@@ -1,0 +1,28 @@
+{"students": [
+    {
+        "name": "John",
+        "surname":  "Kowalski",
+        "index":  "1111"
+    },
+    {
+        "name": "Antoni",
+        "surname":  "Kazwal",
+        "index":  "2222"
+    },
+    {
+        "name": "Piotr",
+        "surname":  "Piotrowski",
+        "index":  "3333"
+    },
+    {
+        "name": "Pawel",
+        "surname":  "Pawlewski",
+        "index":  "444"
+    },
+    {
+        "name": "Tomasz",
+        "surname":  "Tomaszewski",
+        "index":  "5555"
+    }
+]
+}
