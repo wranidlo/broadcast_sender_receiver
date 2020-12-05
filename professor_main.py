@@ -2,8 +2,8 @@ import sys
 import os.path
 from PyQt5 import QtCore
 import netifaces as ni
-from professor.server import Sender
-from professor.server_thread import ThreadedListener, listen
+from professor.listener import Sender
+from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
 from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem
 import json
@@ -35,8 +35,28 @@ class Window(Ui_Form, QWidget):
         self.label_current_data.setText(str("Current broadcast: " + self.sender.ip_broadcast))
         self.button_change_broad.clicked.connect(self.change_ip)
         self.button_save_students.clicked.connect(self.save_attendance_list)
-        self.button_clear_students.clicked.connect(self.clear_lis_students)
-        self.button_delete_student.clicked.connect(self.delete_student)
+        self.button_clear_students.clicked.connect(self.clear_list_attendance)
+        self.button_delete_student.clicked.connect(self.delete_student_attendance)
+        self.load_students_absent()
+        self.list_widget_absent.itemClicked.connect(self.click_student_absent)
+
+    def load_students_absent(self):
+        self.list_widget_absent.clear()
+        file = open("professor/students_list")
+        students_json = json.load(file)
+        for e in students_json["students"]:
+            if not any(d["index"] == e["index"] for d in self.student_list):
+                item = QListWidgetItem(json.dumps(e))
+                item.setForeground(QtCore.Qt.black)
+                item.setTextAlignment(QtCore.Qt.AlignRight)
+                self.list_widget_absent.addItem(item)
+        self.label_absent_students.setText("Absent students: " + str(self.list_widget_absent.count()))
+
+    def click_student_absent(self):
+        student_json = json.loads(self.list_widget_absent.currentItem().text())
+        self.line_edit_name.setText(student_json["name"])
+        self.line_edit_surname.setText(student_json["surname"])
+        self.line_edit_index.setText(student_json["index"])
 
     def send_message_broad(self):
         message = str(self.line_edit_message.text())
@@ -56,13 +76,15 @@ class Window(Ui_Form, QWidget):
         name = self.line_edit_name.text()
         surname = self.line_edit_surname.text()
         index = self.line_edit_index.text()
-        attendance = {"name": name, "surname": surname, "index": index}
-        item = QListWidgetItem(json.dumps(attendance))
-        item.setForeground(QtCore.Qt.blue)
-        item.setTextAlignment(QtCore.Qt.AlignLeft)
-        self.list_widget_students.addItem(item)
-        self.student_list.append(attendance)
-        self.label_current_students.setText("Current students: " + str(len(self.student_list)))
+        if not any(d["index"] == index for d in self.student_list):
+            attendance = {"name": name, "surname": surname, "index": index}
+            item = QListWidgetItem(json.dumps(attendance))
+            item.setForeground(QtCore.Qt.blue)
+            item.setTextAlignment(QtCore.Qt.AlignLeft)
+            self.list_widget_students.addItem(item)
+            self.student_list.append(attendance)
+            self.label_current_students.setText("Current students: " + str(len(self.student_list)))
+        self.load_students_absent()
 
     def load_presences(self):
         self.list_widget_students.clear()
@@ -99,16 +121,19 @@ class Window(Ui_Form, QWidget):
             with open("professor/presence.txt", "a") as f:
                 f.write(json.dumps(e) + "\n")
 
-    def clear_lis_students(self):
+    def clear_list_attendance(self):
         self.student_list.clear()
         self.list_widget_students.clear()
+        self.load_students_absent()
+        self.label_current_students.setText("Current students: 0")
 
-    def delete_student(self):
+    def delete_student_attendance(self):
         try:
             selected_text = self.list_widget_students.currentItem().text()
             selected_row = self.list_widget_students.currentRow()
             self.list_widget_students.takeItem(selected_row)
             self.student_list.remove(json.loads(selected_text))
+            self.load_students_absent()
         except Exception:
             None
         self.label_current_students.setText("Current students: " + str(len(self.student_list)))
