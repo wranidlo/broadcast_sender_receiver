@@ -54,15 +54,14 @@ if __name__ == '__main__':
         data, addr = student.receive_message(1024)
         data = json.loads(data.decode("utf-8"))
         if data.get("type") == "communicator":
-            # os.system("notify-send \"Message from communicator\" \"%s\"" % data.get("message"))
-            with open("chat.txt", "a") as outfile:
+            os.system("notify-send \"Message from communicator\" \"%s\"" % data.get("message"))
+            with open("/etc/virtualab/vm-communicator/mess/chat.txt", "a") as outfile:
                 outfile.write('{"user_ip": "' + str(addr[0]) + '", "broadcast": "' + str(data.get("broadcast")) +
                               '"}\n')
                 outfile.write(str(data.get("message").replace('\n', '\\n'))+"\n")
         else:
             if data.get("type") == "attendance":
-                # os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))
+                os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))
                 pop_up_dialog(addr)
             else:
-                # os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))
-                None
+                os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))
