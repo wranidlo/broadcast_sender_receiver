@@ -41,7 +41,7 @@ class Window(Ui_Dialog, QDialog):
 
     def load_chat(self):
         self.list_chat.clear()
-        file_info = open('mess/chat.txt', 'r')
+        file_info = open('chat.txt', 'r')
         lines = file_info.readlines()
         iterator = 1
         for line in lines:
