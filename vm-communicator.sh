@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 student_main.py
+python3 /etc/virtualab/vm-communicator/student_main.py
