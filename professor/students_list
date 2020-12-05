@@ -2,27 +2,32 @@
     {
         "name": "John",
         "surname":  "Kowalski",
-        "index":  "1111"
+        "index":  "1111",
+        "email": "empty"
     },
     {
         "name": "Antoni",
         "surname":  "Kazwal",
-        "index":  "2222"
+        "index":  "2222",
+        "email": "empty"
     },
     {
         "name": "Piotr",
         "surname":  "Piotrowski",
-        "index":  "3333"
+        "index":  "3333",
+        "email": "empty"
     },
     {
         "name": "Pawel",
         "surname":  "Pawlewski",
-        "index":  "444"
+        "index":  "444",
+        "email": "empty"
     },
     {
         "name": "Tomasz",
         "surname":  "Tomaszewski",
-        "index":  "5555"
+        "index":  "5555",
+        "email": "empty"
     }
 ]
 }

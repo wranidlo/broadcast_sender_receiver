@@ -7,6 +7,7 @@ from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
 from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem
 import json
+import smtplib, ssl
 
 
 def get_broadcasts_interfaces():
@@ -39,6 +40,34 @@ class Window(Ui_Form, QWidget):
         self.button_delete_student.clicked.connect(self.delete_student_attendance)
         self.load_students_absent()
         self.list_widget_absent.itemClicked.connect(self.click_student_absent)
+        self.combo_box_email.addItem("All students")
+        self.combo_box_email.addItem("Absent students")
+        self.button_email.clicked.connect(self.send_email)
+
+    def send_email(self):
+        port = 465  # For SSL
+        smtp_server = "smtp.gmail.com"
+        sender_email = self.line_edit_email.text()
+        password = self.line_edit_password.text()
+        message = self.text_edit_emails.toPlainText()
+        context = ssl.create_default_context()
+        counter_of_emails = 0
+        with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+            server.login(sender_email, password)
+            if self.combo_box_email.currentText() == "All students":
+                file = open("professor/students_list")
+                students_json = json.load(file)
+                for e in students_json["students"]:
+                    if e["email"] != "empty":
+                        server.sendmail(sender_email, e["email"], message)
+                        counter_of_emails += 1
+            if self.combo_box_email.currentText() == "Absent students":
+                for i in range(self.list_widget_absent.count()):
+                    student_json = json.loads(self.list_widget_absent.item(i).text())
+                    if student_json["email"] != "empty":
+                        server.sendmail(sender_email, student_json["email"], message)
+                        counter_of_emails += 1
+        self.label_email_status.setText("Email send: " + str(counter_of_emails))
 
     def load_students_absent(self):
         self.list_widget_absent.clear()
