@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QApplication, QDialog, QScrollBar
+from PyQt5.QtWidgets import QApplication, QDialog, QScrollBar, QWidget
 from mess.threded_loader import *
 from mess.gui import Ui_Dialog
+from mess.help_com import Ui_Help_com
 import json
 import netifaces as ni
 import socket
@@ -16,6 +17,12 @@ def get_broadcasts_interfaces():
     return broadcasts_list
 
 
+class help_dialog(Ui_Help_com, QDialog):
+    def __init__(self, parent=None):
+        super(help_dialog, self).__init__(parent)
+        self.setupUi(self)
+
+
 class Window(Ui_Dialog, QDialog):
     def __init__(self):
         self.sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -23,7 +30,7 @@ class Window(Ui_Dialog, QDialog):
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.ip_broadcast = "127.255.255.255"
         self.my_ip = "127.0.0.1"
-        super(Window, self).__init__()
+        super(Window, self).__init__(None, QtCore.Qt.WindowCloseButtonHint)
         self.setupUi(self)
         self.flag = 0
 
@@ -38,6 +45,12 @@ class Window(Ui_Dialog, QDialog):
         self.update_info()
 
         self.button_synchronize.clicked.connect(self.update_info)
+
+        self.help_button.clicked.connect(self.pop_up_help)
+
+    def pop_up_help(self):
+        ex = help_dialog(self)
+        ex.show()
 
     def load_chat(self):
         self.list_chat.clear()
