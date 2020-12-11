@@ -50,7 +50,7 @@ class Window(Ui_Form, QWidget):
         sender_email = self.line_edit_email.text()
         password = self.line_edit_password.text()
         message = self.text_edit_emails.toPlainText()
-        context = ssl.create_default_context()
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         counter_of_emails = 0
         with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
             server.login(sender_email, password)
