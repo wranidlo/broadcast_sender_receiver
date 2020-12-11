@@ -59,12 +59,18 @@ class Window(Ui_Form, QWidget):
                 students_json = json.load(file)
                 for e in students_json["students"]:
                     if e["email"] != "empty":
+                        self.list_widget_emails.clear()
+                        item = QListWidgetItem(e["email"])
+                        self.list_widget_emails.addItem(item)
                         server.sendmail(sender_email, e["email"], message)
                         counter_of_emails += 1
             if self.combo_box_email.currentText() == "Absent students":
                 for i in range(self.list_widget_absent.count()):
                     student_json = json.loads(self.list_widget_absent.item(i).text())
                     if student_json["email"] != "empty":
+                        self.list_widget_emails.clear()
+                        item = QListWidgetItem(student_json["email"])
+                        self.list_widget_emails.addItem(item)
                         server.sendmail(sender_email, student_json["email"], message)
                         counter_of_emails += 1
         self.label_email_status.setText("Email send: " + str(counter_of_emails))
