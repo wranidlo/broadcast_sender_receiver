@@ -6,6 +6,8 @@ from professor.listener import Sender
 from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
 from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import json
 import smtplib, ssl
 
@@ -49,9 +51,15 @@ class Window(Ui_Form, QWidget):
         smtp_server = "smtp.gmail.com"
         sender_email = self.line_edit_email.text()
         password = self.line_edit_password.text()
-        message = self.text_edit_emails.toPlainText()
+        content = self.text_edit_emails.toPlainText()
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         counter_of_emails = 0
+
+        message = MIMEMultipart("alternative")
+        message["Subject"] = self.line_edit_subject.text()
+        message["From"] = sender_email
+        content_mime = MIMEText(content, "plain")
+
         try:
             with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
                 server.login(sender_email, password)
@@ -60,19 +68,23 @@ class Window(Ui_Form, QWidget):
                     students_json = json.load(file)
                     for e in students_json["students"]:
                         if e["email"] != "empty":
+                            message["To"] = e["email"]
+                            message.attach(content_mime)
                             self.list_widget_emails.clear()
                             item = QListWidgetItem(e["email"])
                             self.list_widget_emails.addItem(item)
-                            server.sendmail(sender_email, e["email"], message)
+                            server.sendmail(sender_email, e["email"], message.as_string())
                             counter_of_emails += 1
                 if self.combo_box_email.currentText() == "Absent students":
                     for i in range(self.list_widget_absent.count()):
                         student_json = json.loads(self.list_widget_absent.item(i).text())
                         if student_json["email"] != "empty":
+                            message["To"] = student_json["email"]
+                            message.attach(content_mime)
                             self.list_widget_emails.clear()
                             item = QListWidgetItem(student_json["email"])
                             self.list_widget_emails.addItem(item)
-                            server.sendmail(sender_email, student_json["email"], message)
+                            server.sendmail(sender_email, student_json["email"], message.as_string())
                             counter_of_emails += 1
                 self.label_email_status.setText("Email authentication ok\n"
                                                 "Send to " + str(counter_of_emails) + " students")
