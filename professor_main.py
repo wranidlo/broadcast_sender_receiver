@@ -52,28 +52,32 @@ class Window(Ui_Form, QWidget):
         message = self.text_edit_emails.toPlainText()
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         counter_of_emails = 0
-        with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-            server.login(sender_email, password)
-            if self.combo_box_email.currentText() == "All students":
-                file = open("professor/students_list")
-                students_json = json.load(file)
-                for e in students_json["students"]:
-                    if e["email"] != "empty":
-                        self.list_widget_emails.clear()
-                        item = QListWidgetItem(e["email"])
-                        self.list_widget_emails.addItem(item)
-                        server.sendmail(sender_email, e["email"], message)
-                        counter_of_emails += 1
-            if self.combo_box_email.currentText() == "Absent students":
-                for i in range(self.list_widget_absent.count()):
-                    student_json = json.loads(self.list_widget_absent.item(i).text())
-                    if student_json["email"] != "empty":
-                        self.list_widget_emails.clear()
-                        item = QListWidgetItem(student_json["email"])
-                        self.list_widget_emails.addItem(item)
-                        server.sendmail(sender_email, student_json["email"], message)
-                        counter_of_emails += 1
-        self.label_email_status.setText("Email send: " + str(counter_of_emails))
+        try:
+            with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+                server.login(sender_email, password)
+                if self.combo_box_email.currentText() == "All students":
+                    file = open("professor/students_list")
+                    students_json = json.load(file)
+                    for e in students_json["students"]:
+                        if e["email"] != "empty":
+                            self.list_widget_emails.clear()
+                            item = QListWidgetItem(e["email"])
+                            self.list_widget_emails.addItem(item)
+                            server.sendmail(sender_email, e["email"], message)
+                            counter_of_emails += 1
+                if self.combo_box_email.currentText() == "Absent students":
+                    for i in range(self.list_widget_absent.count()):
+                        student_json = json.loads(self.list_widget_absent.item(i).text())
+                        if student_json["email"] != "empty":
+                            self.list_widget_emails.clear()
+                            item = QListWidgetItem(student_json["email"])
+                            self.list_widget_emails.addItem(item)
+                            server.sendmail(sender_email, student_json["email"], message)
+                            counter_of_emails += 1
+                self.label_email_status.setText("Email authentication ok\n"
+                                                "Send to " + str(counter_of_emails) + " students")
+        except smtplib.SMTPAuthenticationError:
+            self.label_email_status.setText("Email authentication error\nCheck your email and password")
 
     def load_students_absent(self):
         self.list_widget_absent.clear()
