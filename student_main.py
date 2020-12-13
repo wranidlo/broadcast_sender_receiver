@@ -18,7 +18,7 @@ class input_dialog(Ui_Attendance, QWidget):
         name = self.line_edit_name.text()
         surname = self.line_edit_surname.text()
         index = self.line_edit_index.text()
-        message = {"name": name, "surname": surname, "index": index}
+        message = {"type": "attendance", "name": name, "surname": surname, "index": index}
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.sendto(str(json.dumps(message)).encode("utf-8"), (str(self.addr), 37020))
@@ -47,6 +47,14 @@ def pop_up_dialog(address):
     app.exec_()
 
 
+def send_activity(address):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    f = open("log_activity.json", "r")
+    jf = json.load(f)
+    s.sendto(json.dumps({"type": "activity", "data": jf}).encode("utf-8"), (address[0], 37020))
+
+
 if __name__ == '__main__':
     student = Client()
     student.start()
@@ -58,10 +66,14 @@ if __name__ == '__main__':
             with open("/etc/virtualab/vm-communicator/mess/chat.txt", "a") as outfile:
                 outfile.write('{"user_ip": "' + str(addr[0]) + '", "broadcast": "' + str(data.get("broadcast")) +
                               '"}\n')
-                outfile.write(str(data.get("message").replace('\n', '\\n'))+"\n")
+                outfile.write(str(data.get("message").replace('\n', '\\n')) + "\n")
         else:
             if data.get("type") == "attendance":
                 os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))
                 pop_up_dialog(addr)
             else:
-                os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))
+                if data.get("type") == "activity":
+                    os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))
+                    send_activity(addr)
+                else:
+                    os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))

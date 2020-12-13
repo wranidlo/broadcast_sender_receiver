@@ -42,9 +42,14 @@ class Window(Ui_Form, QWidget):
         self.button_delete_student.clicked.connect(self.delete_student_attendance)
         self.load_students_absent()
         self.list_widget_absent.itemClicked.connect(self.click_student_absent)
+
         self.combo_box_email.addItem("All students")
         self.combo_box_email.addItem("Absent students")
         self.button_email.clicked.connect(self.send_email)
+
+        self.button_activity.clicked.connect(self.activity_check)
+        self.list_activities = {}
+        self.combo_box_student_activity.currentTextChanged.connect(self.load_activity_of_student)
 
     def send_email(self):
         port = 465  # For SSL
@@ -189,12 +194,23 @@ class Window(Ui_Form, QWidget):
             None
         self.label_current_students.setText("Current students: " + str(len(self.student_list)))
 
+    def activity_check(self):
+        message = str("Activity check")
+        message_json = json.dumps({"message": message, "who": "professor", "type": "activity"})
+        self.sender.send_broadcast_message(message_json.encode("utf-8"))
+
+    def load_activity_of_student(self):
+        self.list_widget_activity.clear()
+        for e in self.list_activities[self.combo_box_student_activity.currentText()]:
+            item = QListWidgetItem(str(e))
+            self.list_widget_activity.addItem(item)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = Window()
 
-    s = ThreadedListener(target=listen, args=(window, ))
+    s = ThreadedListener(target=listen, args=(window,))
     s.start()
 
     window.show()
