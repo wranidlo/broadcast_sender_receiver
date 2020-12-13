@@ -1,0 +1,36 @@
+[
+    {
+        "app": "firefox",
+        "percentage": "54",
+        "time": "0:00:35",
+        "windows": [
+            {
+                "window_name": "Install PyCharm\u2014PyCharm \u2014 Mozilla Firefox",
+                "window_percentage": "31",
+                "window_time": "0:00:20"
+            },
+            {
+                "window_name": "YouTube \u2014 Mozilla Firefox",
+                "window_percentage": "23",
+                "window_time": "0:00:15"
+            }
+        ]
+    },
+    {
+        "app": "java",
+        "percentage": "46",
+        "time": "0:00:30",
+        "windows": [
+            {
+                "window_name": "broadcast_sender_receiver \u2013 professor_main.py",
+                "window_percentage": "23",
+                "window_time": "0:00:15"
+            },
+            {
+                "window_name": "broadcast_sender_receiver \u2013 activity.py",
+                "window_percentage": "23",
+                "window_time": "0:00:15"
+            }
+        ]
+    }
+]
