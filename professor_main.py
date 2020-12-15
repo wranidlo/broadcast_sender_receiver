@@ -5,7 +5,7 @@ import netifaces as ni
 from professor.listener import Sender
 from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
-from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem
+from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem, QTreeWidgetItem
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import json
@@ -200,10 +200,16 @@ class Window(Ui_Form, QWidget):
         self.sender.send_broadcast_message(message_json.encode("utf-8"))
 
     def load_activity_of_student(self):
-        self.list_widget_activity.clear()
-        for e in self.list_activities[self.combo_box_student_activity.currentText()]:
-            item = QListWidgetItem(str(e))
-            self.list_widget_activity.addItem(item)
+        self.tree_widget_activity.clear()
+        app_list = self.list_activities[self.combo_box_student_activity.currentText()]
+        app_info = [[e["app"], e["time"], e["percentage"], e["windows"]] for e in app_list]
+        self.tree_widget_activity.setHeaderItem(QTreeWidgetItem(["Name", "Time", "Percentage"]))
+        for e in app_info:
+            app_root = QTreeWidgetItem(self.tree_widget_activity, e[:3])
+            w_lists = [x for x in e[3]]
+            w_info = [[e["window_name"], e["window_time"], e["window_percentage"]] for e in w_lists]
+            for f in w_info:
+                window_root = QTreeWidgetItem(app_root, f)
 
 
 if __name__ == '__main__':

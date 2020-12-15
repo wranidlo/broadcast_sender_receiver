@@ -30,7 +30,8 @@ def listen(window):
                 if j_message["type"] == "activity":
                     print("Activity reported: ", j_message["data"])
                     window.list_activities[str(addr[0])] = j_message["data"]
-                    window.combo_box_student_activity.addItem(str(addr[0]))
+                    if window.combo_box_student_activity.findText(str(addr[0])) == -1:
+                        window.combo_box_student_activity.addItem(str(addr[0]))
                     window.combo_box_student_activity.setCurrentText(str(addr[0]))
         except socket.timeout:
             None
