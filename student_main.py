@@ -58,6 +58,9 @@ def send_activity(address):
 if __name__ == '__main__':
     student = Client()
     student.start()
+    os.system("export DISPLAY=:0.0")
+    os.system("XDG_RUNTIME_DIR=/run/user/$(id -u)")
+
     while True:
         data, addr = student.receive_message(1024)
         data = json.loads(data.decode("utf-8"))
