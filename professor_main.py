@@ -60,7 +60,7 @@ class Window(Ui_Form, QWidget):
         sender_email = self.line_edit_email.text()
         password = self.line_edit_password.text()
         content = self.text_edit_emails.toPlainText()
-        context = ssl.create_default_context()
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         counter_of_emails = 0
         message = MIMEMultipart("alternative")
         message["Subject"] = self.line_edit_subject.text()
