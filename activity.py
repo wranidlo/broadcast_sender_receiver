@@ -11,7 +11,6 @@ def get_current_time(format_time=None):
 
 
 def time_format(s):
-    # convert time format from seconds to h:m:s
     m, s = divmod(s, 60)
     h, m = divmod(m, 60)
     return "%d:%02d:%02d" % (h, m, s)

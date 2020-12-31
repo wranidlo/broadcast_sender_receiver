@@ -1,15 +1,18 @@
-import sys
+import json
 import os.path
-from PyQt5 import QtCore
+import smtplib
+import ssl
+import sys
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import netifaces as ni
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem, QTreeWidgetItem
+
 from professor.listener import Sender
 from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
-from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem, QTreeWidgetItem
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import json
-import smtplib, ssl
 
 
 def get_broadcasts_interfaces():
@@ -52,21 +55,21 @@ class Window(Ui_Form, QWidget):
         self.combo_box_student_activity.currentTextChanged.connect(self.load_activity_of_student)
 
     def send_email(self):
-        port = 465  # For SSL
+        port = 587  # For SSL
         smtp_server = "smtp.gmail.com"
         sender_email = self.line_edit_email.text()
         password = self.line_edit_password.text()
         content = self.text_edit_emails.toPlainText()
-        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context = ssl.create_default_context()
         counter_of_emails = 0
-
         message = MIMEMultipart("alternative")
         message["Subject"] = self.line_edit_subject.text()
         message["From"] = sender_email
         content_mime = MIMEText(content, "plain")
 
         try:
-            with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+            with smtplib.SMTP(smtp_server, port) as server:
+                server.starttls(context=context)
                 server.login(sender_email, password)
                 if self.combo_box_email.currentText() == "All students":
                     file = open("professor/students_list")
