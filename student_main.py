@@ -50,7 +50,7 @@ def pop_up_dialog(address):
 def send_activity(address):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    f = open("log_activity.json", "r")
+    f = open("/etc/virtualab/vm-communicator/log_activity.json", "r")
     jf = json.load(f)
     s.sendto(json.dumps({"type": "activity", "data": jf}).encode("utf-8"), (address[0], 37020))
 

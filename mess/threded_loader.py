@@ -15,7 +15,7 @@ class ThreadedLoader(threading.Thread):
 
     def run(self):
         while True:
-            file = open('mess/chat.txt', 'r')
+            file = open('/etc/virtualab/vm-communicator/mess/chat.txt', 'r')
             lines = file.readlines()
             if len(lines) > self.lines_number:
                 self.lines_number = len(lines)
