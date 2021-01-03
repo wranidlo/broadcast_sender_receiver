@@ -1,0 +1,2 @@
+#!/bin/sh
+python3 /etc/virtualab/vm-communicator/activity.py
