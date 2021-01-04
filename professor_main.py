@@ -199,6 +199,8 @@ class Window(Ui_Form, QWidget):
 
     def activity_check(self):
         message = str("Activity check")
+        self.list_activities.clear()
+        self.combo_box_student_activity.clear()
         message_json = json.dumps({"message": message, "who": "professor", "type": "activity"})
         self.sender.send_broadcast_message(message_json.encode("utf-8"))
 
