@@ -26,6 +26,7 @@ class ThreadedLoader(threading.Thread):
                         line_json = json.loads(line)
                         user_ip = line_json.get("user_ip")
                         broadcast = line_json.get("broadcast")
+                        sender = json.loads(line).get("sender")
                     else:
                         if str(broadcast) == self.window.ip_broadcast:
                             if str(user_ip) == str(self.window.my_ip):
@@ -33,7 +34,7 @@ class ThreadedLoader(threading.Thread):
                                 item.setForeground(QtCore.Qt.blue)
                                 item.setTextAlignment(QtCore.Qt.AlignLeft)
                             else:
-                                item = QListWidgetItem("-- " + user_ip + " --\n" + line.replace('\\n', '\n'))
+                                item = QListWidgetItem("-- " + sender + " --\n" + line.replace('\\n', '\n'))
                                 item.setForeground(QtCore.Qt.green)
                                 item.setTextAlignment(QtCore.Qt.AlignLeft)
                             self.window.list_chat.addItem(item)

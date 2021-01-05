@@ -39,12 +39,6 @@ class ActivityLogger:
             app = get([
                 "ps", "-p", frpid, "-o", "comm="
             ]) if frpid is not None else "Unknown"
-            # fix a few names
-            if "gnome-terminal" in app:
-                app = "gnome-terminal"
-            elif app == "soffice.bin":
-                app = "libreoffice"
-            # add app to list
             if app not in self.list_of_active_apps:
                 self.list_of_active_apps.append(app)
             checklist = [item[1] for item in self.list_of_activity_in_apps]

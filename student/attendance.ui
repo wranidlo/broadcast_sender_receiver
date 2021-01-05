@@ -61,6 +61,20 @@
      </item>
      <item row="1" column="0">
       <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="2">
+        <widget class="QLineEdit" name="line_edit_name">
+         <property name="toolTip">
+          <string>Enetr your name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="line_edit_surname">
+         <property name="toolTip">
+          <string>Enetr your surname</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_surname">
          <property name="font">
@@ -71,6 +85,19 @@
          </property>
          <property name="text">
           <string>Surname</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>E-mail</string>
          </property>
         </widget>
        </item>
@@ -100,26 +127,15 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QLineEdit" name="line_edit_name">
-         <property name="toolTip">
-          <string>Enetr your name</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLineEdit" name="line_edit_surname">
-         <property name="toolTip">
-          <string>Enetr your surname</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="2">
         <widget class="QLineEdit" name="line_edit_index">
          <property name="toolTip">
           <string>Enetr your index</string>
          </property>
         </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="line_edit_email"/>
        </item>
       </layout>
      </item>

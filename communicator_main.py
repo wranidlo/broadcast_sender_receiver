@@ -25,6 +25,8 @@ class help_dialog(Ui_Help_com, QDialog):
 
 class Window(Ui_Dialog, QDialog):
     def __init__(self):
+        self.user_name = "template"  # loading from json
+
         self.sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -59,16 +61,17 @@ class Window(Ui_Dialog, QDialog):
         iterator = 1
         for line in lines:
             if iterator % 2 == 1:
-                user = json.loads(line).get("user_ip")
+                sender_ip = json.loads(line).get("user_ip")
                 broadcast = json.loads(line).get("broadcast")
+                sender = json.loads(line).get("sender")
             else:
                 if str(broadcast) == self.ip_broadcast:
-                    if user == self.my_ip:
+                    if sender_ip == self.my_ip:
                         item = QListWidgetItem("-- Me --\n" + line.replace('\\n', '\n'))
                         item.setForeground(QtCore.Qt.blue)
                         item.setTextAlignment(QtCore.Qt.AlignLeft)
                     else:
-                        item = QListWidgetItem("-- " + user + " --\n" + line.replace('\\n', '\n'))
+                        item = QListWidgetItem("-- " + sender + " --\n" + line.replace('\\n', '\n'))
                         item.setForeground(QtCore.Qt.black)
                         item.setTextAlignment(QtCore.Qt.AlignLeft)
                     self.list_chat.addItem(item)
@@ -77,7 +80,8 @@ class Window(Ui_Dialog, QDialog):
 
     def send(self):
         message = self.line_edit_messege.toPlainText()
-        message_json = {"message": message, "broadcast": self.ip_broadcast, "type": "communicator"}
+        message_json = {"message": message, "broadcast": self.ip_broadcast, "type": "communicator",
+                        "sender": self.user_name}
         try:
             self.sender.sendto(json.dumps(message_json).encode("utf-8"), (self.ip_broadcast, 37021))
             item = QListWidgetItem("-- Me --\n" + message)

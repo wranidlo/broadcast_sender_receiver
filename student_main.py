@@ -14,11 +14,17 @@ class input_dialog(Ui_Attendance, QWidget):
         self.addr = address
         self.button_send.clicked.connect(self.send_presence)
 
+        self.line_edit_name.setText("Jo")
+        self.line_edit_index.setText("1111")
+        self.line_edit_surname.setText("Jo")
+        self.line_edit_email.setText("empty")
+
     def send_presence(self):
         name = self.line_edit_name.text()
         surname = self.line_edit_surname.text()
         index = self.line_edit_index.text()
-        message = {"type": "attendance", "name": name, "surname": surname, "index": index}
+        email = self.line_edit_email.text()
+        message = {"type": "attendance", "name": name, "surname": surname, "index": index, "email": email}
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.sendto(str(json.dumps(message)).encode("utf-8"), (str(self.addr), 37020))
@@ -27,14 +33,14 @@ class input_dialog(Ui_Attendance, QWidget):
 
 class Client:
     def __init__(self):
+        self.user_name = "Jo Jo"
+
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
     def start(self):
         self.client.bind(("", 37021))
-        # print(self.client.getsockname())
-        # print("Listening")
 
     def receive_message(self, length):
         return self.client.recvfrom(length)
@@ -47,12 +53,12 @@ def pop_up_dialog(address):
     app.exec_()
 
 
-def send_activity(address):
+def send_activity(address, sender):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     f = open("/etc/virtualab/vm-communicator/log_activity.json", "r")
     jf = json.load(f)
-    s.sendto(json.dumps({"type": "activity", "data": jf}).encode("utf-8"), (address[0], 37020))
+    s.sendto(json.dumps({"type": "activity", "sender": sender, "data": jf}).encode("utf-8"), (address[0], 37020))
 
 
 if __name__ == '__main__':
@@ -68,7 +74,7 @@ if __name__ == '__main__':
             os.system("notify-send \"Message from communicator\" \"%s\"" % data.get("message"))
             with open("/etc/virtualab/vm-communicator/mess/chat.txt", "a") as outfile:
                 outfile.write('{"user_ip": "' + str(addr[0]) + '", "broadcast": "' + str(data.get("broadcast")) +
-                              '"}\n')
+                              '", "sender": "' + str(data.get("sender")) + '"}\n')
                 outfile.write(str(data.get("message").replace('\n', '\\n')) + "\n")
         else:
             if data.get("type") == "attendance":
@@ -77,6 +83,6 @@ if __name__ == '__main__':
             else:
                 if data.get("type") == "activity":
                     os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))
-                    send_activity(addr)
+                    send_activity(addr, student.user_name)
                 else:
                     os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))

@@ -198,11 +198,14 @@ class Window(Ui_Form, QWidget):
         self.label_current_students.setText("Current students: " + str(len(self.student_list)))
 
     def activity_check(self):
-        message = str("Activity check")
-        self.list_activities.clear()
-        self.combo_box_student_activity.clear()
-        message_json = json.dumps({"message": message, "who": "professor", "type": "activity"})
-        self.sender.send_broadcast_message(message_json.encode("utf-8"))
+        try:
+            message = str("Activity check")
+            self.list_activities.clear()
+            message_json = json.dumps({"message": message, "who": "professor", "type": "activity"})
+            self.sender.send_broadcast_message(message_json.encode("utf-8"))
+            self.label_activity_status.setText("Activity check - done")
+        except:
+            self.label_activity_status.setText("Something went wrong, check your ethernet connection")
 
     def load_activity_of_student(self):
         self.tree_widget_activity.clear()
