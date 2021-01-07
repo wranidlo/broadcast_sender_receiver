@@ -5,6 +5,7 @@ from mess.help_com import Ui_Help_com
 import json
 import netifaces as ni
 import socket
+import os
 
 
 def get_broadcasts_interfaces():
@@ -25,7 +26,17 @@ class help_dialog(Ui_Help_com, QDialog):
 
 class Window(Ui_Dialog, QDialog):
     def __init__(self):
-        self.user_name = "template"  # loading from json
+        with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
+            data = json_file.read()
+            data = data.replace('u"', '"')
+            with open("Output", "w") as text_file:
+                text_file.write(data)
+        with open("Output", "r") as file:
+            user_json = json.load(file)
+            if "student" in user_json:
+                self.user_name = user_json["student"]["name"] + user_json["student"]["surname"]
+            else:
+                self.user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
 
         self.sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

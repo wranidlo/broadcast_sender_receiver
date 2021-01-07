@@ -49,9 +49,9 @@ class Client:
         with open("Output", "r") as file:
             user_json = json.load(file)
             if "student" in user_json:
-                self.user_name = user_json["student"]["name"]+user_json["student"]["albumnr"]
+                self.user_name = user_json["student"]["name"]+user_json["student"]["surname"]
             else:
-                self.user_name = user_json["professor"]["name"] + user_json["professor"]["albumnr"]
+                self.user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
