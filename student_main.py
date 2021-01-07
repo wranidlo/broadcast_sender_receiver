@@ -14,10 +14,13 @@ class input_dialog(Ui_Attendance, QWidget):
         self.addr = address
         self.button_send.clicked.connect(self.send_presence)
 
-        self.line_edit_name.setText("Jo")
-        self.line_edit_index.setText("1111")
-        self.line_edit_surname.setText("Jo")
-        self.line_edit_email.setText("empty")
+        with open("home/vagrant/.virtualabinfo", "r") as file:
+            user_json = json.load(file)
+            if "student" in user_json:
+                self.line_edit_name.setText(user_json["student"]["name"])
+                self.line_edit_index.setText(user_json["student"]["albumnr"])
+                self.line_edit_surname.setText(user_json["student"]["surname"])
+                self.line_edit_email.setText(user_json["student"]["email"])
 
     def send_presence(self):
         name = self.line_edit_name.text()
@@ -33,7 +36,12 @@ class input_dialog(Ui_Attendance, QWidget):
 
 class Client:
     def __init__(self):
-        self.user_name = "Jo Jo"
+        with open("home/vagrant/.virtualabinfo", "r") as file:
+            user_json = json.load(file)
+            if "student" in user_json:
+                self.user_name = user_json["student"]["name"]+user_json["student"]["albumnr"]
+            else:
+                self.user_name = user_json["professor"]["name"] + user_json["professor"]["albumnr"]
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

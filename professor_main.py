@@ -72,9 +72,13 @@ class Window(Ui_Form, QWidget):
                 server.starttls(context=context)
                 server.login(sender_email, password)
                 if self.combo_box_email.currentText() == "All students":
-                    file = open("professor/students_list")
+                    file = open("home/vagrant/.virtualabinfo", "r")
                     students_json = json.load(file)
-                    for e in students_json["students"]:
+                    for e in students_json["professor"]["students"]:
+                        e["index"] = e["albumnr"]
+                        del e["albumnr"]
+                        del e["ip"]
+                        del e["professorip"]
                         if e["email"] != "empty":
                             message["To"] = e["email"]
                             message.attach(content_mime)
@@ -101,9 +105,13 @@ class Window(Ui_Form, QWidget):
 
     def load_students_absent(self):
         self.list_widget_absent.clear()
-        file = open("professor/students_list")
+        file = open("home/vagrant/.virtualabinfo", "r")
         students_json = json.load(file)
-        for e in students_json["students"]:
+        for e in students_json["professor"]["students"]:
+            e["index"] = e["albumnr"]
+            del e["albumnr"]
+            del e["ip"]
+            del e["professorip"]
             if not any(d["index"] == e["index"] for d in self.student_list):
                 item = QListWidgetItem(json.dumps(e))
                 item.setForeground(QtCore.Qt.black)
