@@ -14,7 +14,7 @@ class input_dialog(Ui_Attendance, QWidget):
         self.addr = address
         self.button_send.clicked.connect(self.send_presence)
 
-        with open(os.path.expanduser("~/vagrant/.virtualabinfo"), "r") as json_file:
+        with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
             data = json_file.read()
             data = data.replace('u"', '"')
             with open("Output", "w") as text_file:
@@ -41,7 +41,7 @@ class input_dialog(Ui_Attendance, QWidget):
 
 class Client:
     def __init__(self):
-        with open(os.path.expanduser("~/vagrant/.virtualabinfo"), "r") as json_file:
+        with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
             data = json_file.read()
             data = data.replace('u"', '"')
             with open("Output", "w") as text_file:
