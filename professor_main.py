@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem, QTreeWidgetI
 from professor.listener import Sender
 from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
-
+import fileinput
 
 def get_broadcasts_interfaces():
     broadcasts_list = []
@@ -72,21 +72,26 @@ class Window(Ui_Form, QWidget):
                 server.starttls(context=context)
                 server.login(sender_email, password)
                 if self.combo_box_email.currentText() == "All students":
-                    file = open(os.path.expanduser('~/.virtualabinfo'), "r")
-                    students_json = json.load(file)
-                    for e in students_json["professor"]["students"]:
-                        e["index"] = e["albumnr"]
-                        del e["albumnr"]
-                        del e["ip"]
-                        del e["professorip"]
-                        if e["email"] != "empty":
-                            message["To"] = e["email"]
-                            message.attach(content_mime)
-                            self.list_widget_emails.clear()
-                            item = QListWidgetItem(e["email"])
-                            self.list_widget_emails.addItem(item)
-                            server.sendmail(sender_email, e["email"], message.as_string())
-                            counter_of_emails += 1
+                    with open(os.path.expanduser("~/vagrant/.virtualabinfo"), "r") as json_file:
+                        data = json_file.read()
+                        data = data.replace('u"', '"')
+                        with open("Output", "w") as text_file:
+                            text_file.write(data)
+                    with open("Output", "r") as data:
+                        students_json = json.load(data)
+                        for e in students_json["professor"]["students"]:
+                            e["index"] = e["albumnr"]
+                            del e["albumnr"]
+                            del e["ip"]
+                            del e["professorip"]
+                            if e["email"] != "empty":
+                                message["To"] = e["email"]
+                                message.attach(content_mime)
+                                self.list_widget_emails.clear()
+                                item = QListWidgetItem(e["email"])
+                                self.list_widget_emails.addItem(item)
+                                server.sendmail(sender_email, e["email"], message.as_string())
+                                counter_of_emails += 1
                 if self.combo_box_email.currentText() == "Absent students":
                     for i in range(self.list_widget_absent.count()):
                         student_json = json.loads(self.list_widget_absent.item(i).text())
@@ -105,19 +110,24 @@ class Window(Ui_Form, QWidget):
 
     def load_students_absent(self):
         self.list_widget_absent.clear()
-        file = open(os.path.expanduser('~/.virtualabinfo'), "r")
-        students_json = json.load(file)
-        for e in students_json["professor"]["students"]:
-            e["index"] = e["albumnr"]
-            del e["albumnr"]
-            del e["ip"]
-            del e["professorip"]
-            if not any(d["index"] == e["index"] for d in self.student_list):
-                item = QListWidgetItem(json.dumps(e))
-                item.setForeground(QtCore.Qt.black)
-                item.setTextAlignment(QtCore.Qt.AlignRight)
-                self.list_widget_absent.addItem(item)
-        self.label_absent_students.setText("Absent students: " + str(self.list_widget_absent.count()))
+        with open(os.path.expanduser("~/vagrant/.virtualabinfo"), "r") as json_file:
+            data = json_file.read()
+            data = data.replace('u"', '"')
+            with open("Output", "w") as text_file:
+                text_file.write(data)
+        with open("Output", "r") as json_file:
+            students_json = json.load(json_file)
+            for e in students_json["professor"]["students"]:
+                e["index"] = e["albumnr"]
+                del e["albumnr"]
+                del e["ip"]
+                del e["professorip"]
+                if not any(d["index"] == e["index"] for d in self.student_list):
+                    item = QListWidgetItem(json.dumps(e))
+                    item.setForeground(QtCore.Qt.black)
+                    item.setTextAlignment(QtCore.Qt.AlignRight)
+                    self.list_widget_absent.addItem(item)
+            self.label_absent_students.setText("Absent students: " + str(self.list_widget_absent.count()))
 
     def click_student_absent(self):
         student_json = json.loads(self.list_widget_absent.currentItem().text())
@@ -229,6 +239,8 @@ class Window(Ui_Form, QWidget):
 
 
 if __name__ == '__main__':
+    with open(os.path.expanduser('~/vagrant/.virtualabinfo'), "r") as file:
+        print(file.readline())
     app = QApplication(sys.argv)
     window = Window()
 
