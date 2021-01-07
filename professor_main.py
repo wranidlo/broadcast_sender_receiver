@@ -72,7 +72,7 @@ class Window(Ui_Form, QWidget):
                 server.starttls(context=context)
                 server.login(sender_email, password)
                 if self.combo_box_email.currentText() == "All students":
-                    file = open(os.path.expanduser('~/vagrant/.virtualabinfo'), "r")
+                    file = open(os.path.expanduser('~/.virtualabinfo'), "r")
                     students_json = json.load(file)
                     for e in students_json["professor"]["students"]:
                         e["index"] = e["albumnr"]
@@ -105,7 +105,7 @@ class Window(Ui_Form, QWidget):
 
     def load_students_absent(self):
         self.list_widget_absent.clear()
-        file = open(os.path.expanduser('~/vagrant/.virtualabinfo'), "r")
+        file = open(os.path.expanduser('~/.virtualabinfo'), "r")
         students_json = json.load(file)
         for e in students_json["professor"]["students"]:
             e["index"] = e["albumnr"]
