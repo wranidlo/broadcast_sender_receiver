@@ -14,7 +14,7 @@ class input_dialog(Ui_Attendance, QWidget):
         self.addr = address
         self.button_send.clicked.connect(self.send_presence)
 
-        with open("home/vagrant/.virtualabinfo", "r") as file:
+        with open(os.path.expanduser('~/vagrant/.virtualabinfo'), "r") as file:
             user_json = json.load(file)
             if "student" in user_json:
                 self.line_edit_name.setText(user_json["student"]["name"])
@@ -36,7 +36,7 @@ class input_dialog(Ui_Attendance, QWidget):
 
 class Client:
     def __init__(self):
-        with open("home/vagrant/.virtualabinfo", "r") as file:
+        with open(os.path.expanduser('~/vagrant/.virtualabinfo'), "r") as file:
             user_json = json.load(file)
             if "student" in user_json:
                 self.user_name = user_json["student"]["name"]+user_json["student"]["albumnr"]
