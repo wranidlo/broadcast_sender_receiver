@@ -134,6 +134,7 @@ class Window(Ui_Form, QWidget):
         self.line_edit_name.setText(student_json["name"])
         self.line_edit_surname.setText(student_json["surname"])
         self.line_edit_index.setText(student_json["index"])
+        self.line_edit_student_email.setText(student_json["email"])
 
     def send_message_broad(self):
         message = str(self.line_edit_message.text())
@@ -153,8 +154,9 @@ class Window(Ui_Form, QWidget):
         name = self.line_edit_name.text()
         surname = self.line_edit_surname.text()
         index = self.line_edit_index.text()
+        email = self.line_edit_student_email.text()
         if not any(d["index"] == index for d in self.student_list):
-            attendance = {"name": name, "surname": surname, "index": index}
+            attendance = {"name": name, "surname": surname, "index": index, "email": email}
             item = QListWidgetItem(json.dumps(attendance))
             item.setForeground(QtCore.Qt.blue)
             item.setTextAlignment(QtCore.Qt.AlignLeft)
