@@ -5,11 +5,6 @@ import time
 from operator import itemgetter
 
 
-def get_current_time(format_time=None):
-    return time.strftime("%Y_%m_%d_%H_%M_%S") if format_time == "file" \
-        else time.strftime("%Y-%m-%d %H:%M:%S")
-
-
 def time_format(s):
     m, s = divmod(s, 60)
     h, m = divmod(m, 60)
@@ -26,28 +21,28 @@ def get(command):
 class ActivityLogger:
     def __init__(self):
         self.period = 5
-        self.order = "up"
-        self.start_time = get_current_time()
+        self.start_time = time.strftime("%Y_%m_%d_%H_%M_%S")
         self.t = 0
         self.list_of_active_apps = []
         self.list_of_activity_in_apps = []
 
     def run(self):
         while True:
-            frpid = get(["xdotool", "getactivewindow", "getwindowpid"])
-            frname = get(["xdotool", "getactivewindow", "getwindowname"])
-            app = get([
-                "ps", "-p", frpid, "-o", "comm="
-            ]) if frpid is not None else "Unknown"
+            window_pid = get(["xdotool", "getactivewindow", "getwindowpid"])
+            window_name = get(["xdotool", "getactivewindow", "getwindowname"])
+            if window_pid is not None:
+                app = get(["ps", "-p", window_pid, "-o", "comm="])
+            else:
+                app = get(["ps", "-p", "Unknown window", "-o", "comm="])
             if app not in self.list_of_active_apps:
                 self.list_of_active_apps.append(app)
             checklist = [item[1] for item in self.list_of_activity_in_apps]
-            if frname not in checklist:
-                self.list_of_activity_in_apps.append([app, frname, 1 * self.period])
+            if window_name not in checklist:
+                self.list_of_activity_in_apps.append([app, window_name, 1 * self.period])
             else:
-                self.list_of_activity_in_apps[checklist.index(frname)][
-                    2] = self.list_of_activity_in_apps[checklist.index(frname)][2] + 1 * self.period
-            if self.t == 60 / self.period:
+                self.list_of_activity_in_apps[checklist.index(window_name)][
+                    2] = self.list_of_activity_in_apps[checklist.index(window_name)][2] + 1 * self.period
+            if self.t == 30 / self.period:
                 self.summarize()
                 self.t = 0
             else:
@@ -69,11 +64,11 @@ class ActivityLogger:
                 window_percents = str(round(100 * w[2] / total_time))
                 window_data.append([w[1], w[2], window_percents])
             window_data = sorted(window_data, key=itemgetter(1))
-            window_data = window_data[::-1] if self.order == "up" else window_data
+            window_data = window_data[::-1]
             appdata.append(window_data)
             all_data.append(appdata)
         all_data = sorted(all_data, key=itemgetter(1))
-        all_data = all_data[::-1] if self.order == "up" else all_data
+        all_data = all_data[::-1]
 
         list_to_save = []
 
