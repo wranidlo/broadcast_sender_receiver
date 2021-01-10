@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem, QTreeWidgetI
 from professor.listener import Sender
 from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
-import fileinput
+
 
 def get_broadcasts_interfaces():
     broadcasts_list = []
@@ -55,7 +55,7 @@ class Window(Ui_Form, QWidget):
         self.combo_box_student_activity.currentTextChanged.connect(self.load_activity_of_student)
 
     def send_email(self):
-        port = 587  # For SSL
+        port = 587  # For TSL
         smtp_server = "smtp.gmail.com"
         sender_email = self.line_edit_email.text()
         password = self.line_edit_password.text()
