@@ -55,7 +55,7 @@ class Window(Ui_Form, QWidget):
         self.combo_box_student_activity.currentTextChanged.connect(self.load_activity_of_student)
 
     def send_email(self):
-        port = 587  # For TSL
+        port = 587  # For TLS
         smtp_server = "smtp.gmail.com"
         sender_email = self.line_edit_email.text()
         password = self.line_edit_password.text()

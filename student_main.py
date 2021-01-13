@@ -74,7 +74,7 @@ def pop_up_dialog(address):
 def send_activity(address, sender):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    f = open("/etc/virtualab/vm-communicator/log_activity.json", "r")
+    f = open("/etc/virtualab/vm-communicator/log_of_activity.json", "r")
     jf = json.load(f)
     s.sendto(json.dumps({"type": "activity", "sender": sender, "data": jf}).encode("utf-8"), (address[0], 37020))
 
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         data, addr = student.receive_message(1024)
         data = json.loads(data.decode("utf-8"))
         if data.get("type") == "communicator":
-            os.system("notify-send \"Message from communicator\" \"%s\"" % data.get("message"))
+            os.system("notify-send \"Message from " + str(data.get("sender")) + " \" \"%s\"" % data.get("message"))
             with open("/etc/virtualab/vm-communicator/mess/chat.txt", "a") as outfile:
                 outfile.write('{"user_ip": "' + str(addr[0]) + '", "broadcast": "' + str(data.get("broadcast")) +
                               '", "sender": "' + str(data.get("sender")) + '"}\n')
@@ -100,7 +100,7 @@ if __name__ == '__main__':
                 pop_up_dialog(addr)
             else:
                 if data.get("type") == "activity":
-                    os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))
+                    os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))    
                     send_activity(addr, student.user_name)
                 else:
                     os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))
