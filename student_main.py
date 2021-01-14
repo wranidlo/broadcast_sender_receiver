@@ -4,7 +4,7 @@ import sys
 import json
 
 from PyQt5.QtWidgets import QWidget, QApplication
-from student.attendance import *
+from user.attendance import *
 
 
 class input_dialog(Ui_Attendance, QWidget):
@@ -50,8 +50,10 @@ class Client:
             user_json = json.load(file)
             if "student" in user_json:
                 self.user_name = user_json["student"]["name"]+user_json["student"]["surname"]
+                self.type = "student"
             else:
                 self.user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
+                self.type = "professor"
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -74,19 +76,19 @@ def pop_up_dialog(address):
 def send_activity(address, sender):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    f = open("/etc/virtualab/vm-communicator/log_of_activity.json", "r")
+    f = open("/etc/virtualab/vm-communicator/log_activity.json", "r")
     jf = json.load(f)
     s.sendto(json.dumps({"type": "activity", "sender": sender, "data": jf}).encode("utf-8"), (address[0], 37020))
 
 
 if __name__ == '__main__':
-    student = Client()
-    student.start()
+    user = Client()
+    user.start()
     os.system("export DISPLAY=:0.0")
     os.system("XDG_RUNTIME_DIR=/run/user/$(id -u)")
 
     while True:
-        data, addr = student.receive_message(1024)
+        data, addr = user.receive_message(1024)
         data = json.loads(data.decode("utf-8"))
         if data.get("type") == "communicator":
             os.system("notify-send \"Message from " + str(data.get("sender")) + " \" \"%s\"" % data.get("message"))
@@ -100,7 +102,10 @@ if __name__ == '__main__':
                 pop_up_dialog(addr)
             else:
                 if data.get("type") == "activity":
-                    os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))    
-                    send_activity(addr, student.user_name)
+                    if user.type == "student":
+                        os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))
+                        send_activity(addr, user.user_name)
+                    else:
+                        os.system("notify-send \"Activity check\" \"%s\"" % "You started activity check")
                 else:
                     os.system("notify-send \"Message from professor\" \"%s\"" % data.get("message"))

@@ -87,7 +87,7 @@ class Ui_Attendance(object):
 
     def retranslateUi(self, Attendance):
         _translate = QtCore.QCoreApplication.translate
-        Attendance.setWindowTitle(_translate("Attendance", "Form"))
+        Attendance.setWindowTitle(_translate("Attendance", "Attendance check"))
         self.button_send.setToolTip(_translate("Attendance", "Send information about your presence"))
         self.button_send.setText(_translate("Attendance", "Confirm attendance"))
         self.label_attendance.setText(_translate("Attendance", "Attendance check"))

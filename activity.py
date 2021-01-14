@@ -93,9 +93,8 @@ class ActivityLogger:
                 windows_list.append(window_dict)
             dict_app["windows"] = windows_list
             list_to_save.append(dict_app)
-        with open('/etc/virtualab/vm-communicator/log_of_activity.json', 'w') as out:
+        with open('/etc/virtualab/vm-communicator/log_activity.json', 'w') as out:
             json.dump(list_to_save, out, sort_keys=True, indent=4, separators=(',', ': '))
-        os.system("notify-send \"Saving activity\" \"%s\"" % "yoooooo")
 
 
 if __name__ == '__main__':

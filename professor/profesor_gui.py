@@ -418,7 +418,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Professor panel"))
         self.label.setText(_translate("Form", "Input message"))
         self.button_send_message.setText(_translate("Form", "Send"))
         self.label_2.setText(_translate("Form", "List of send messages"))
