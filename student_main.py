@@ -4,7 +4,7 @@ import sys
 import json
 
 from PyQt5.QtWidgets import QWidget, QApplication
-from user.attendance import *
+from student.attendance import *
 
 
 class input_dialog(Ui_Attendance, QWidget):
