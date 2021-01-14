@@ -33,6 +33,7 @@ def listen(window):
                     if window.combo_box_student_activity.findText(j_message["sender"]) == -1:
                         window.combo_box_student_activity.addItem(j_message["sender"])
                     window.combo_box_student_activity.setCurrentText(j_message["sender"])
+                    window.load_activity_of_student()
         except socket.timeout:
             None
 
