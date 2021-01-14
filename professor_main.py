@@ -167,8 +167,8 @@ class Window(Ui_Form, QWidget):
 
     def load_presences(self):
         self.list_widget_students.clear()
-        if os.path.isfile('professor/presence.txt'):
-            file_info = open('professor/presence.txt', 'r')
+        if os.path.isfile('/etc/virtualab/vm-communicator/professor/presence.txt'):
+            file_info = open('/etc/virtualab/vm-communicator/professor/presence.txt', 'r')
             lines = file_info.readlines()
             for line in lines:
                 self.student_list.append(json.loads(line))
@@ -195,9 +195,9 @@ class Window(Ui_Form, QWidget):
         self.label_current_data.setText(str("Current broadcast: " + self.sender.ip_broadcast))
 
     def save_attendance_list(self):
-        open("professor/presence.txt", "w").close()
+        open("/etc/virtualab/vm-communicator/professor/presence.txt", "w").close()
         for e in self.student_list:
-            with open("professor/presence.txt", "a") as f:
+            with open("/etc/virtualab/vm-communicator/professor/presence.txt", "a") as f:
                 f.write(json.dumps(e) + "\n")
 
     def clear_list_attendance(self):
