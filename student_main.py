@@ -41,19 +41,19 @@ class input_dialog(Ui_Attendance, QWidget):
 
 class Client:
     def __init__(self):
-        with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
-            data = json_file.read()
-            data = data.replace('u"', '"')
-            with open("Output", "w") as text_file:
-                text_file.write(data)
-        with open("Output", "r") as file:
-            user_json = json.load(file)
-            if "student" in user_json:
-                self.user_name = user_json["student"]["name"]+user_json["student"]["surname"]
-                self.type = "student"
-            else:
-                self.user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
-                self.type = "professor"
+        # with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
+        #     data = json_file.read()
+        #     data = data.replace('u"', '"')
+        #     with open("Output", "w") as text_file:
+        #         text_file.write(data)
+        # with open("Output", "r") as file:
+        #     user_json = json.load(file)
+        #     if "student" in user_json:
+        #         self.user_name = user_json["student"]["name"]+user_json["student"]["surname"]
+        #         self.type = "student"
+        #     else:
+        #         self.user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
+        #         self.type = "professor"
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -101,10 +101,25 @@ if __name__ == '__main__':
                 os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))
                 pop_up_dialog(addr)
             else:
+                #  Reading json here
+                with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
+                    raw_file = json_file.read()
+                    raw_file = raw_file.replace('u"', '"')
+                    with open("Output", "w") as text_file:
+                        text_file.write(raw_file)
+                with open("Output", "r") as file:
+                    user_json = json.load(file)
+                    if "student" in user_json:
+                        user_name = user_json["student"]["name"] + user_json["student"]["surname"]
+                        user_type = "student"
+                    else:
+                        user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
+                        user_type = "professor"
+
                 if data.get("type") == "activity":
-                    if user.type == "student":
+                    if user_type == "student":
                         os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))
-                        send_activity(addr, user.user_name)
+                        send_activity(addr, user_name)
                     else:
                         os.system("notify-send \"Activity check\" \"%s\"" % "You started activity check")
                 else:
