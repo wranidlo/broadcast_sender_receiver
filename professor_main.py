@@ -10,7 +10,7 @@ import netifaces as ni
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QApplication, QListWidgetItem, QTreeWidgetItem
 
-from professor.listener import Sender
+from professor.sender import Sender
 from professor.listener_thread import ThreadedListener, listen
 from professor.profesor_gui import Ui_Form
 
