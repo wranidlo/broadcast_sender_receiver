@@ -71,34 +71,44 @@ class Window(Ui_Form, QWidget):
             with smtplib.SMTP(smtp_server, port) as server:
                 server.starttls(context=context)
                 server.login(sender_email, password)
+                self.list_widget_emails.clear()
                 if self.combo_box_email.currentText() == "All students":
-                    with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
-                        data = json_file.read()
-                        data = data.replace('u"', '"')
-                        with open("Output", "w") as text_file:
-                            text_file.write(data)
-                    with open("Output", "r") as data:
-                        students_json = json.load(data)
-                        for e in students_json["professor"]["students"]:
-                            e["index"] = e["albumnr"]
-                            del e["albumnr"]
-                            del e["ip"]
-                            del e["professorip"]
-                            if e["email"] != "empty":
-                                message["To"] = e["email"]
-                                message.attach(content_mime)
-                                self.list_widget_emails.clear()
-                                item = QListWidgetItem(e["email"])
-                                self.list_widget_emails.addItem(item)
-                                server.sendmail(sender_email, e["email"], message.as_string())
-                                counter_of_emails += 1
+                    for i in range(self.list_widget_absent.count()):
+                        student_json = json.loads(self.list_widget_absent.item(i).text())
+                        if student_json["email"] != "empty":
+                            message["To"] = student_json["email"]
+                            message.attach(content_mime)
+                            item = QListWidgetItem(student_json["email"])
+                            self.list_widget_emails.addItem(item)
+                            server.sendmail(sender_email, student_json["email"], message.as_string())
+                            counter_of_emails += 1
+                    # with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
+                    #     data = json_file.read()
+                    #     data = data.replace('u"', '"')
+                    #     with open("Output", "w") as text_file:
+                    #         text_file.write(data)
+                    # with open("Output", "r") as data:
+                    #     students_json = json.load(data)
+                    #     for e in students_json["professor"]["students"]:
+                    #         e["index"] = e["albumnr"]
+                    #         del e["albumnr"]
+                    #         del e["ip"]
+                    #         del e["professorip"]
+                    for i in range(self.list_widget_students.count()):
+                        student_json = json.loads(self.list_widget_students.item(i).text())
+                        if student_json["email"] != "empty":
+                            message["To"] = student_json["email"]
+                            message.attach(content_mime)
+                            item = QListWidgetItem(student_json["email"])
+                            self.list_widget_emails.addItem(item)
+                            server.sendmail(sender_email, student_json["email"], message.as_string())
+                            counter_of_emails += 1
                 if self.combo_box_email.currentText() == "Absent students":
                     for i in range(self.list_widget_absent.count()):
                         student_json = json.loads(self.list_widget_absent.item(i).text())
                         if student_json["email"] != "empty":
                             message["To"] = student_json["email"]
                             message.attach(content_mime)
-                            self.list_widget_emails.clear()
                             item = QListWidgetItem(student_json["email"])
                             self.list_widget_emails.addItem(item)
                             server.sendmail(sender_email, student_json["email"], message.as_string())
