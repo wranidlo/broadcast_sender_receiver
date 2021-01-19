@@ -32,7 +32,7 @@ class Window(Ui_Form, QWidget):
         self.sender = Sender()
         self.sender.set_broadcast_ip("127.255.255.255")
         self.student_list = []
-
+        self.default_ip = "127.0.0.1"
         self.button_send_message.clicked.connect(self.send_message_broad)
         self.button_attendance.clicked.connect(self.attendance_check)
         self.button_add_student.clicked.connect(self.add_student_presence)
@@ -54,6 +54,21 @@ class Window(Ui_Form, QWidget):
         self.button_activity.clicked.connect(self.activity_check)
         self.list_activities = {}
         self.combo_box_student_activity.currentTextChanged.connect(self.load_activity_of_student)
+        try:
+            self.set_default_ip()
+        except Exception:
+            pass
+
+    def set_default_ip(self):
+        if self.default_ip == "127.0.0.1":
+            self.sender.set_broadcast_ip("127.255.255.255")
+        else:
+            for e in ni.interfaces():
+                if ni.ifaddresses(e).get(2)[0].get("addr") == self.default_ip:
+                    self.sender.set_broadcast_ip(ni.ifaddresses(e).get(2)[0].get("broadcast"))
+                    self.combo_broad.setCurrentText(ni.ifaddresses(e).get(2)[0].get("broadcast"))
+                    self.label_current_data.setText(str("Current broadcast: " + self.sender.ip_broadcast))
+                    break
 
     def send_email(self):
         port = 587  # For TLS
@@ -126,6 +141,10 @@ class Window(Ui_Form, QWidget):
                 text_file.write(data)
         with open("Output", "r") as json_file:
             students_json = json.load(json_file)
+            try:
+                self.default_ip = students_json["professor"]["students"][0]["professorip"]
+            except Exception:
+                pass
             for e in students_json["professor"]["students"]:
                 e["index"] = e["albumnr"]
                 del e["albumnr"]

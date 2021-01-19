@@ -26,6 +26,12 @@ class help_dialog(Ui_Help_com, QDialog):
 
 class Window(Ui_Dialog, QDialog):
     def __init__(self):
+        super(Window, self).__init__(None, QtCore.Qt.WindowCloseButtonHint)
+        self.setupUi(self)
+        self.ip_broadcast = "127.255.255.255"
+        self.my_ip = "127.0.0.1"
+        self.update_info()
+
         with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
             data = json_file.read()
             data = data.replace('u"', '"')
@@ -35,16 +41,21 @@ class Window(Ui_Dialog, QDialog):
             user_json = json.load(file)
             if "student" in user_json:
                 self.user_name = user_json["student"]["name"] + user_json["student"]["surname"]
+                try:
+                    self.set_default_ip(user_json["student"]["ip"])
+                except Exception:
+                    pass
             else:
                 self.user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
+                try:
+                    self.set_default_ip(user_json["professor"]["students"][0]["professorip"])
+                except Exception:
+                    pass
 
         self.sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sender.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.ip_broadcast = "127.255.255.255"
-        self.my_ip = "127.0.0.1"
-        super(Window, self).__init__(None, QtCore.Qt.WindowCloseButtonHint)
-        self.setupUi(self)
+
         self.flag = 0
 
         self.button_send.clicked.connect(self.send)
@@ -53,9 +64,6 @@ class Window(Ui_Dialog, QDialog):
         scroll_bar = QScrollBar(self)
         scroll_bar.setStyleSheet("background : lightgreen;")
         self.list_chat.setVerticalScrollBar(scroll_bar)
-
-        self.load_broad_ip()
-        self.update_info()
 
         self.button_synchronize.clicked.connect(self.update_info)
 
@@ -117,6 +125,20 @@ class Window(Ui_Dialog, QDialog):
                     break
         self.load_chat()
         self.update_info()
+
+    def set_default_ip(self, ip):
+        if ip == "127.0.0.1":
+            self.ip_broadcast = "127.255.255.255"
+            self.my_ip = "127.0.0.1"
+        else:
+            for e in ni.interfaces():
+                if ni.ifaddresses(e).get(2)[0].get("addr") == ip:
+                    self.ip_broadcast = ni.ifaddresses(e).get(2)[0].get("broadcast")
+                    self.my_ip = ni.ifaddresses(e).get(2)[0].get("addr")
+                    self.combo_box_ip.setCurrentText(self.ip_broadcast)
+                    break
+        self.load_chat()
+        self.label_info.setText(str("Your ip: " + self.my_ip + " | Current broadcast: " + self.ip_broadcast))
 
     def load_broad_ip(self):
         interfaces = get_broadcasts_interfaces()

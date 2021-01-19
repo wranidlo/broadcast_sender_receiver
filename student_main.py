@@ -97,25 +97,28 @@ if __name__ == '__main__':
                               '", "sender": "' + str(data.get("sender")) + '"}\n')
                 outfile.write(str(data.get("message").replace('\n', '\\n')) + "\n")
         else:
-            if data.get("type") == "attendance":
-                os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))
-                pop_up_dialog(addr)
-            else:
-                #  Reading json here
-                with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
-                    raw_file = json_file.read()
-                    raw_file = raw_file.replace('u"', '"')
-                    with open("Output", "w") as text_file:
-                        text_file.write(raw_file)
-                with open("Output", "r") as file:
-                    user_json = json.load(file)
-                    if "student" in user_json:
-                        user_name = user_json["student"]["name"] + user_json["student"]["surname"]
-                        user_type = "student"
-                    else:
-                        user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
-                        user_type = "professor"
+            #  Reading json here
+            with open(os.path.expanduser("~/.virtualabinfo"), "r") as json_file:
+                raw_file = json_file.read()
+                raw_file = raw_file.replace('u"', '"')
+                with open("Output", "w") as text_file:
+                    text_file.write(raw_file)
+            with open("Output", "r") as file:
+                user_json = json.load(file)
+                if "student" in user_json:
+                    user_name = user_json["student"]["name"] + user_json["student"]["surname"]
+                    user_type = "student"
+                else:
+                    user_name = user_json["professor"]["name"] + user_json["professor"]["surname"]
+                    user_type = "professor"
 
+            if data.get("type") == "attendance":
+                if user_type == "student":
+                    os.system("notify-send \"Attendance check\" \"%s\"" % data.get("message"))
+                    pop_up_dialog(addr)
+                else:
+                    os.system("notify-send \"Attendance check\" \"%s\"" % "You started attendance check")
+            else:
                 if data.get("type") == "activity":
                     if user_type == "student":
                         os.system("notify-send \"Activity check\" \"%s\"" % data.get("message"))
