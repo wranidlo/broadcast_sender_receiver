@@ -15,7 +15,7 @@ communicator_main.py and professor_main.py are responsible for activating the co
 
 
 ## Dependencies
+- PyQt5
+- xdotool
 - libnotify-bin
 - net-tools
-- git
-- python3-pip
